@@ -1,0 +1,21 @@
+{% extends 'base_index.html' %}
+{% block content %}
+<div id="contents">	
+<br>
+<table border="1">
+<thead>
+	<th>shotno</th>
+	<th>episode</th>
+	<th>projectname</th>
+</thead>
+{%for i in details%}
+<tr>
+ 	<td>{{i.shotno}}</td>
+ 	<td>{{i.episode}}</td>
+ 	<td>{{i.projectname}}</td>
+</tr>
+{%endfor%}
+</table>
+</div>
+</br>
+{% endblock %}

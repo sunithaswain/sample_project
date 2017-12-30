@@ -1,0 +1,132 @@
+{% extends 'base_index.html' %}
+{% block content %}
+<div id="contents">	
+<br>
+<input type="submit" name="submit_btn" value="Save" onclick="myFunction()"/>
+
+<table border="1">
+<thead>
+	<th>select checkboxs</th>
+	<th>shotno</th>
+	<th>episode</th>
+	<th>projectname</th>
+	<th>supervisor</th>
+	<th>assigned</th>
+	<th>process</th>
+</thead>
+{%for i in shotkey%}
+<tr>
+	<td ><input type="checkbox" name="checkbox" id="{{i.id}}" value="{{i.id}}">
+    <label for="{{i.id}}"></label></td>
+	 <td id="{{i.id}}_shot_number">{{i.shotno}}</td>
+	 <td id="{{i.id}}_episode">{{i.episode}}</td>
+	 <td id="{{i.id}}_project">{{i.projectname}}</td>
+	 <td id="{{i.id}}_supervisor">{{i.supervisor}}</td>
+	<td>
+		<select id="{{i.id}}_artist" >
+		{%if i.assigned == '' %}	
+		<option value="select">select</option>
+		{%endif%}
+		{% for j in artists %}					
+			{%if i.assigned %}
+				<option value="{{i.assigned}}" selected="selected">{{i.assigned}}</option>
+			{%else%}
+			
+			<option value="{{j}}">{{j}}</option>
+			{%endif%}
+			{% endfor %}
+		</select>
+	</td>
+<td id="{{i.id}}_process">{{i.process}}</td>
+
+</tr>
+
+{%endfor%}
+</table>
+
+<script type="text/javascript">
+function myFunction () {
+	// var status_value = document.getElementById(event.target.id).value;
+	// var ids = event.target.id;
+	chboxes = document.getElementsByName('checkbox');
+
+	for(i=0;i<chboxes.length;i++)
+	{
+		if(chboxes[i].checked)
+		{
+			var id_value = chboxes[i].value;
+			console.log(id_value);
+
+			artist_id = document.getElementById(String(id_value)+"_artist").value;
+			console.log(artist_id);
+			if(artist_id!='select')
+			{
+				alert('success');
+
+				$.ajax({
+				type:"GET",
+				url:"/process/shots_update/",
+	 			data:{"artist":artist_id,'shot_id':id_value
+	 				},
+	 			success:function(data)
+					{
+						console.log("success");
+			 		}
+				});
+			}
+			else
+			{
+				alert('please select artist');
+			}
+			//document.getElementById('')
+		}
+		// else
+		// {
+		// 	alert('please select the checkbox');
+		// 	break;
+		// }
+	}
+
+		
+
+	//console.log(chboxes.length);
+	//alert(event.target.id);
+	//alert(status_value);
+	
+	
+
+	// if (status_value!="assigned")
+	// 	{
+		// $.ajax({
+		// 		type:"GET",
+		// 		url:"/process/shotsup/",
+	 // 			data:{"status_id":status_value},
+	 // 			success:function(data)
+		// 		{//alert("success");
+		// 	}
+		// 	});
+
+	// 	}
+	// else
+	// {
+	// 	alert("not updated");	
+	// }
+
+	// $.ajax({
+	// 			type:"GET",
+	// 			url:"/process/task_call/",
+	// 			data:{"check_this":x,"user_id":id},
+
+	// 			success:function(data)
+	// 			{alert("success");}
+
+	// 		});
+
+}
+
+</script>
+
+
+
+</div>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends 'base_index.html' %}
+
+{% block content %}
+<div id="contents"> 
+<form action="{% url 'generating' %}" method="post" class="message">
+  {% csrf_token %}
+  <div class="form-group">
+    <label for="name">Id:</label>
+    <select name="ids">
+        <option value="ID">ID</option>
+        <option value="p6852">p6852</option>
+        <option value="p6851">p6851</option>
+        <option value="p6850">p6850</option>
+    </select>
+    <!-- <input type="name" class="form-control" id="name" name='name'> -->
+  </div>
+
+  <div class="form-group">
+    <label for="name">Ticket Type:</label>
+    <select name="ticket_type">
+        <option value="Type">Type</option>
+        <option value="New One">New One</option>
+        <option value="Existing One">Existing One</option>
+        <option value="Bug fixing">Bug fixing</option>
+    </select>  
+  </div>
+
+  <div class="form-group">
+    <label for="name">Deadline:</label>
+    <input type="date" name="deadline">
+  </div>
+
+  <div class="form-group">
+    <label for="name">Description:</label>
+    <textarea  name="description" placeholder="Add your comment here!"></textarea>
+  </div>
+  <br>
+  <div class="form-group">
+    <label for="name">Department:</label>
+    <input type="text" name="department">
+  </div>
+  <br>
+  <div class="form-group">
+    <label for="name">status:</label>
+    <input type="text" name="status">
+  </div>
+  <br>
+  <button type="submit" class="btn btn-primary">Submit</button>
+  
+</form>
+
+<br>
+  
+</div>
+{% endblock %}

@@ -1,0 +1,144 @@
+{% extends 'base_index.html' %}
+
+{% block content %}
+
+<br>
+
+<div id="contents">	
+<br>
+<button onclick="submit()">Download</button>
+<table border="1">
+<thead>
+	<th>Assigned</th>
+	<th>Descripition</th>
+	<th>Details</th>
+	<th>Deadline</th>
+	<th>Department</th>
+	<th>Status</th>
+</thead>
+{%for i in ids_process%}
+
+	<tr >
+		<td >{{i.ids}}</td>
+		<!-- <td>
+			<select id="mySelects">
+				{% for j in assigned %}					
+					{%if i.assigned == j %}
+						<option value="{{i.assigned}}" selected="selected">{{i.assigned}}</option>
+		  			{%else%}
+						<option value="{{j}}">{{j}}</option>
+					{%endif%}
+				{% endfor %}
+			</select>
+			<p id="demo"></p>
+		</td>  -->
+		<!-- <td>{{i.assigned}}</td> -->
+
+		<td>{{i.descripition}}</td>
+		<td>{{i.details}}</td>
+
+		<td>{{i.deadline}}</td>
+		<td>{{i.Department}}</td>
+		<td>
+			<select id="{{i.id}}" onchange="myFunction()">
+				{% for j in status %}					
+					{%if i.status == j %}
+						<option value="{{i.status}}" selected="selected">{{i.status}}</option>
+		  			{%else%}
+						<option value="{{j}}">{{j}}</option>
+					{%endif%}
+				{% endfor %}
+			</select>
+		</td>
+		<!-- <td>{{i.status}}</td> -->
+
+
+	</tr>
+
+	{%endfor%}
+</table>
+
+<script type="text/javascript">
+function submit()
+{
+	alert("sunitha");
+
+	var doc = new jsPDF('p', 'pt', 'a4');
+	table_data_js = document.getElementById('contents').text;
+	table_data_jq = $('#contents').text();
+	// alert(table_data);
+	// doc.setFontSize(40)
+	// doc.text(35, 25, 'Paranyan loves jsPDF')
+	// doc.
+	// doc.addHTML(table_data,function() { doc.save('tableData.pdf');});
+	doc.text('sunitha all the best');
+	// doc.text(table_data_jq);
+	// doc.addHTML(table_data_js);
+	// doc.addHTML(table_data_jq, 'html', 15, 40, 180, 160)
+	doc.save('tableData.pdf');
+
+	// doc.addImage(imgData, 'JPEG', 15, 40, 180, 160);table_data
+}
+
+function myFunction () {
+	//this is for getting all the status in task_call page in browser
+	// var x = document.getElementById("mySelect").value;
+	//this is for getting all the ids in task_call page in browser    
+	// var id=document.getElementById("get_id").innerText;
+	// alert(id);
+	//this is for getting all the assigned ids in task_call page in browser
+	// var assigned_value = document.getElementById("mySelects").value;
+	var status_value = document.getElementById(event.target.id).value;
+	alert(event.target.id);
+	alert(status_value);
+	var id = event.target.id;//getting dynamic id 
+	
+	
+	// alert(status_value);
+
+	// if (assigned_value!="ASSIGNED")
+	// {
+	// 	$.ajax({
+	// 			type:"GET",
+	// 			url:"/process/task_call/",
+	//  			data:{"check_this":x,"user_id":id,"assign_dat":assigned_value},
+	//  			success:function(data)
+	// 			{alert("success");}
+	// 		});
+
+	// }
+	if (status_value!="STATUS")
+		{
+		$.ajax({
+				type:"GET",
+				url:"/process/double_ids/",
+	 			data:{"status_id":status_value, "t_id":id},
+	 			success:function(data)
+				{alert("success");}
+			});
+
+		}
+	else
+	{
+		alert("not updated");	
+	}
+
+	// $.ajax({
+	// 			type:"GET",
+	// 			url:"/process/task_call/",
+	// 			data:{"check_this":x,"user_id":id},
+
+	// 			success:function(data)
+	// 			{alert("success");}
+
+	// 		});
+
+}
+
+</script>
+
+
+
+</div>
+{% endblock %}
+

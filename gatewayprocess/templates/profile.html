@@ -1,0 +1,27 @@
+{% extends 'base_index.html' %}
+
+{% block content %}
+<div id="contents">	
+
+	{%for i in data%}
+		{%if i.user_role == 1%}
+			{{i.email|upper}}
+			<p>{{Supervisor|lower}}</p> 
+			{{request.user.username}}              
+		{%elif i.user_role == 2%}
+			{{i.email|upper}}
+			<p>Artist</p>  
+			{{request.user.username}}                   
+		{%elif i.user_role == 3%}
+			{{i.email|upper}}
+			<p>Developer|lower</p> 
+			{{request.user.username}}		
+		{%else%}
+			{{i.email}}
+			<p>Admin</p> 
+			{{request.user.username}}
+		{%endif%}
+	{%endfor%}
+
+</div>
+{% endblock %}

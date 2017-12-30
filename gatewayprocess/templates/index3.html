@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<table class="table">
+    <!-- this tr for table headings -->
+    <tr class="danger">
+        <td>name <td>
+        <td>requirement <td>
+        <td>duration <td>
+        <td>amount <td>     
+    </tr>
+
+{% if questions %}
+    {% for question in questions %}
+    <tr class="info">
+        <td>{{ question.name }} <td>
+        <td>{{ question.requirement }} <td>
+        <td>{{ question.duration }} <td>
+        <td>{{ question.amount }} <td>
+
+    </tr>
+    {% endfor %}
+{% else %}
+    <p>No questions are available.</p>
+{% endif %}
+</table>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends 'base_index.html'%}
+{% block content %}
+<div id="contents">
+		<div class="clearfix">
+			<div class="sidebar">
+				<div>
+					<h2>Contact Info</h2>
+					<ul class="contact">
+						<li>
+							<p>
+								<span class="home"></span> <em>Manes Winchester<br> Family Law Firm</em> the address city, state 1111
+							</p>
+						</li>
+						<li>
+							<p class="phone">
+								Phone: (+20) 000 222 999
+							</p>
+						</li>
+						<li>
+							<p class="fax">
+								Fax: (+20) 000 222 988
+							</p>
+						</li>
+						<li>
+							<p class="mail">
+								Email: info@freewebsitetemplates.com
+							</p>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div class="main">
+				<h1>Login</h1>
+				<!-- <h2>Send Us a Quick Message</h2>
+				<p>
+					You can remove any link to our website from this website template, you're free to use this website template without linking back to us.If you're having problems editing this website template, then don't hesitate to ask for help on the Forums.
+				</p> -->
+				<form action="{% url 'registering' %}" method="post" class="message">
+					{% csrf_token %}
+					<label>Id</label>
+					<!-- <input type="text" value=""> -->
+					<input type="text" id="Firstname" name='Firstname' >
+					<label>Password</label>
+					<!-- <input type="text" value=""> -->
+					<input type="password" id="password" name='password'>  
+					<br>
+					<br>
+					<input type="submit" value="Login">
+				</form>
+
+				{% if message %}
+				  <p class="alert alert-primary" role="alert">{{message}}</p>
+				  {% endif %}
+
+				  {{request.user}}
+			</div>
+		</div>
+	</div>
+
+{% endblock %}

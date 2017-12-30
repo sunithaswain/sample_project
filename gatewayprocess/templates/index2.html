@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<!-- {% if questions %}
+    <ul>
+	
+			
+
+    {% for question in questions %}
+        <li class="btn btn-primary"><a href="/seconds/{{ question.id }}/">{{ question.name }} {{question.employeer}} {{question.instutite}} {{question.Note}} {{question.publicity}} {{question.Descripition}}</a></li>
+
+        
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No questions are available.</p>
+{% endif %}
+ -->
+
+<table>
+    <!-- this tr for table headings -->
+    <tr>
+        <td>Name <td>
+        <td>Employer <td>
+        <td>Institute <td>
+        <td>Note <td>
+        <td>Publicity <td>
+        <td>Description <td>      
+    </tr>
+
+    {% if questions %}
+    <!-- this tr for displaying dynamic data which is called from views -->
+    {% for question in questions %}
+    <tr>
+        <td>{{ question.name }} <td>
+        <td>{{ question.employeer }} <td>
+        <td>{{ question.instutite }} <td>
+        <td>{{ question.Note }} <td>
+        <td>{{ question.publicity }} <td>
+        <td>{{ question.Descripition }} <td>
+
+    </tr>
+    {% endfor %}
+    {% else %}
+    <p>No questions are available.</p>
+{% endif %}
+
+</table>
+
+{% endblock %}

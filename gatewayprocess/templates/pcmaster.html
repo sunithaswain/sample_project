@@ -1,0 +1,63 @@
+{% extends 'base_index.html' %}
+{% block content %}
+<form action="{% url 'pctasked' %}" method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  <div class="form-group">
+    Upload<input type="file" name="myuploadfile" />
+    <!-- <button type="upload" class="btn btn-primary">Upload</button>  -->
+  </div>
+  <div class="form-group">
+    <button type="preview" class="btn btn-primary">preview</button>   
+  </div>  
+  <button type="submit" class="btn btn-primary">submit</button><br>
+  {% if msg %}
+  <p>{{msg}}</p>
+  {% endif %}
+  <label for="name">Id:</label>
+    <select name="ids" id="sunitha" onchange="myFunction()">
+        <option value="select ">select</option>
+        <option value="create tasks">create tasks</option>
+        <option value="create shots">create shots</option>
+    </select>
+</form>
+<script type="text/javascript">
+function myFunction () {
+  
+  var status_value = document.getElementById("sunitha").value;
+  //alert(event.target.id);
+  alert(status_value);
+  // var id = event.target.id;//getting dynamic id 
+  
+
+  if (status_value!="select")
+    {
+    $.ajax({
+        type:"GET",
+        url:"/process/exreading/",
+        data:{"status":status_value},
+        success:function(data)
+        {alert("success");}
+      });
+
+    }
+  else
+  {
+    alert("not updated"); 
+  }
+
+  // $.ajax({
+  //      type:"GET",
+  //      url:"/process/task_call/",
+  //      data:{"check_this":x,"user_id":id},
+
+  //      success:function(data)
+  //      {alert("success");}
+
+  //    });
+
+}
+
+</script>
+
+
+{% endblock %}

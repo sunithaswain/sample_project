@@ -1,0 +1,33 @@
+{% load static %}
+<html>
+<head>
+<link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap.min.css" type="text/css">
+<link rel="stylesheet" href="{{ STATIC_URL }}css/navigation.css" type="text/css">
+
+<script src="{{ STATIC_URL }}js/jquery-3.2.1.min.js"></script>
+
+</head>
+<body>
+
+<div>
+	<!-- {% if request.user.is_anonymous%} -->
+	<a href="{% url 'registering'%}">LogIn</a>	
+	<!-- {% else %}
+	<a href="{%url 'profiling' %}">Profile</a>
+	<a href="{% url 'changing'%}">Change Password</a>
+	<a href="{%url 'logout'%}">Logout</a><br>
+	<a href="{%url 'similars'%}">mytickets</a><br>
+
+	<a href="{%url 'generating'%}">raise tickets</a><br> -->
+	{% endif %}
+
+{% block content %}
+
+
+
+{% endblock %}
+</div>
+	
+
+</body>
+</html>
