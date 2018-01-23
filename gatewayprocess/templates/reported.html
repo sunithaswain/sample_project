@@ -1,0 +1,103 @@
+{% extends 'base_index.html' %}
+{% block content %}
+<div >
+    <form class="form-inline">
+        <label for="name">project:</label>
+        <select name="name_type">
+            <option value="five_it">five_it</option>
+            <option value="jbs3">jbs3</option>
+        </select>  
+        <label for="start_date">Start Date:</label>
+        <input type="date" id="s_date"/>
+        <label for="end_date">End Date:</label>
+        <input type="date" id="e_date"/>
+      </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+
+    </form>
+
+    
+    <br>
+
+    {{table_data | safe }}
+
+    <br>
+<button id="myBtn">Open Modal</button>
+
+<!-- The Modal -->
+<div id="myModal" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <div class="modal-header">
+      <span class="close">&times;</span>
+      <h2>Detailed Report</h2>
+    </div>
+    <div class="modal-body" id="modal_popup_data">
+      <!-- <p>Display popup table her</p> -->
+      
+    </div>
+    <div class="modal-footer">
+      <h3>Modal Footer</h3>
+    </div>
+  </div>
+</div>
+<script>
+
+$('.table td').click(function(){
+    //alert('hi sunitha');
+    //alert($(this).id);
+    console.log(event.target.id);
+    var modal = document.getElementById('myModal');
+    var span = document.getElementsByClassName("close")[0];
+    $.ajax({
+            type:"GET",
+            url:"/process/report_popup/",
+            data:{"status_report":event.target.id},
+            success:function(data)
+            {
+                console.log("success");
+                console.log(data.is_popupdata);
+                // document.getElementById('modal_popup_data').innerHTML=data.is_popupdata;
+
+                $(".modal-body").html(data.is_popupdata);
+                modal.style.display = "block";
+
+                // $("#modal_popup_data").HTML=data.is_popupdata;
+            }
+            // span.onclick = function() {
+            // modal.style.display = "none";
+            // }
+        });
+});
+
+
+// Get the button that opens the modal
+var btn = document.getElementById("myBtn");
+
+// Get the modal
+var modal = document.getElementById('myModal');
+
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks the button, open the modal 
+btn.onclick = function() {
+    modal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+    modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+</script>
+
+{% endblock %}

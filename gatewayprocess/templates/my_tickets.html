@@ -3,10 +3,11 @@
 {% block content %}
 
 <br>
+<button onclick="submit()">Download</button>
 
 <div id="contents">	
 <br>
-<button onclick="submit()">Download</button>
+
 <table border="1">
 <thead>
 	<th>Assigned</th>
@@ -61,21 +62,30 @@
 <script type="text/javascript">
 function submit()
 {
-	alert("sunitha");
+	//alert("sunitha");
+
+
+	var options = {background:"#418423"}
 
 	var doc = new jsPDF('p', 'pt', 'a4');
-	table_data_js = document.getElementById('contents').text;
-	table_data_jq = $('#contents').text();
+
+	doc.addHTML($('#contents'),options, function(){
+		doc.save('tableData.pdf');
+	});
+	// var doc = new jsPDF('1', 'mm', [297,210]);
+	// table_data_js = document.getElementById('contents').text;
+	// table_data_jq = $('#contents').text();
+	
 	// alert(table_data);
 	// doc.setFontSize(40)
 	// doc.text(35, 25, 'Paranyan loves jsPDF')
 	// doc.
 	// doc.addHTML(table_data,function() { doc.save('tableData.pdf');});
-	doc.text('sunitha all the best');
+	// doc.text('sunitha all the best');
 	// doc.text(table_data_jq);
 	// doc.addHTML(table_data_js);
 	// doc.addHTML(table_data_jq, 'html', 15, 40, 180, 160)
-	doc.save('tableData.pdf');
+	// doc.save('tableData.pdf');
 
 	// doc.addImage(imgData, 'JPEG', 15, 40, 180, 160);table_data
 }

@@ -1,0 +1,122 @@
+{% extends 'base_index.html' %}
+{% block content %}
+<select id ="college_id">
+	<option>College</option>
+	{% for i in colleges%}	
+	<option>{{i}}</option>
+	{%endfor%}
+</select>
+
+<select id ="year_id">
+	<option>Year</option>
+	{% for i in years%}	
+	<option>{{i}}</option>
+	{%endfor%}
+</select>
+
+<!-- <button class="btn btn-success">Refresh</button> -->
+<!-- <button type="submit" class="btn btn-primary" id="submit_btn" onclick="sunita()">Submit</button> -->
+<button type="submit" class="btn btn-primary" id="submit_btn">Submit</button>
+
+<div id="dynamic_table">
+{{table_data|safe}}
+</div>
+<!--  modal popup data start -->
+
+<div id="myPopupModal" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <div class="modal-header">
+      <span class="close">&times;</span>
+      <h2>Detailed Report</h2>
+    </div>
+    <div class="modal-body" id="modal_popup_data">      
+      
+    </div>
+    <div class="modal-footer">
+      <h3>Modal Footer</h3>
+    </div>
+  </div>
+</div>
+
+<!-- modal popup end -->
+
+
+<script >
+$('.table td').click(function(){
+console.log(event.target.id);
+var modal = document.getElementById('myPopupModal');
+    var span = document.getElementsByClassName("close")[0];    
+	$.ajax({
+        type:"GET",
+        url:"/process/static_data_versionpopup/",
+            data:{"student_report":event.target.id},
+            success:function(data)
+            {
+                console.log("success");
+                console.log(data);
+                console.log(data.popup_data);
+                $(".modal-body").html(data.popup_data);
+                modal.style.display = "block";
+            }
+        });
+
+		span.onclick = function() {
+    	modal.style.display = "none";
+	}
+
+	// When the user clicks anywhere outside of the modal, close it
+	window.onclick = function(event) {
+	    if (event.target == modal) {
+	        modal.style.display = "none";
+	    }
+	}
+// alert(event.target.id);
+});
+
+
+
+
+// When the user clicks on <span> (x), close the modal
+
+// function sunitha(){
+//     document.getElementById("year_id").value;
+// }
+
+$('#submit_btn').click(function(){
+
+	//alert("hi");
+	var year=$('#year_id').val();
+	var college=$('#college_id').val();
+    console.log(year);
+    console.log(college);
+	if ((college!='College') && (year !='Year'))
+	{
+		//alert('condition ok');
+		$.ajax({
+            type:"GET",
+            url:"/process/student_data/",
+            data:{"sel_year":year,"sel_college":college},
+            success:function(data)
+            {                       
+            	console.log("success");
+                // console.log(data.filter_data);
+                // alert(data.filter_data);
+                
+                $("#dynamic_table").html(data.filter_data);
+                               
+            }            
+        });
+
+	}
+	else
+	{
+		alert('Please select college or year!!!!');
+	}
+	// alert(year);
+
+});
+
+</script>
+{% endblock %}

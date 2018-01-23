@@ -54,3 +54,5 @@ def generate_ticket(request):
         form = ticketlogform()
     
     return render(request,'calllog.html',{'form':form, 'message':success_message})
+def reporting(request):
+   return render(request,'reported.html',{})

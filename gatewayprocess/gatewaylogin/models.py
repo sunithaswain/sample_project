@@ -32,8 +32,6 @@ class genticketing(models.Model):
 class upload_files(models.Model):
     """ This model is to  save uploading  excel files paths"""
     excel_files=models.FileField(upload_to='documents/')
-
-
 class Shots(models.Model):
     """This is shots data model """
     shotno=models.CharField(max_length=250,blank=True)
@@ -42,7 +40,24 @@ class Shots(models.Model):
     supervisor=models.CharField(max_length=250,blank=True)
     assigned=models.CharField(max_length=250,blank=True)
     process=models.CharField(max_length=250,blank=True)
-'''class Renders(models.Model):
-   render=models.CharField(max_length=250,blank=True)
-   shotno=models.CharField(max_length=250,blank=True)
-   name=models.CharField(max_length=250,blank=True)''' 
+    status = models.CharField(max_length=250,blank=True)
+
+
+# class reports(models.Model):
+#    project=models.CharField(max_length=250,blank=True)
+#    episode=models.CharField(max_length=250,blank=True)
+#    wip=models.CharField(max_length=250,blank=True)
+#    complete=models.CharField(max_length=250,blank=True)
+#    approved=models.CharField(max_length=250,blank=True)
+
+class project(models.Model):
+    project_name = models.CharField(max_length=250, blank=True, null=True)
+
+class episodes(models.Model):
+    project_name = models.CharField(max_length=250, blank=True, null=True)
+    episodes = models.TextField(max_length=250, blank=True, null=True)
+class subjectdetails(models.Model):
+    collegename=models.CharField(max_length=250,blank=True)
+    branch=models.CharField(max_length=250,blank=True)
+    year=models.CharField(max_length=250,blank=True)
+

@@ -18,6 +18,19 @@ urlpatterns = [
     url(r'^pc_master/',views.task_read,name='pctasked'),
     url(r'^shotdetail/',views.shotdata,name='shotdetal'),
     url(r'^shotsup/',views.shotsupervesior,name='shotversior'),
+    url(r'^getdat/',views.filteringdata,name='shotdetal'),
+    url(r'^getdatversion_2/',views.filteringdata_version2,name='shotdetal_v2'),
+    url(r'^student_data/',views.ajax_filter_data_studentdetails,name='ajax_student_data'),
+
+    
+    url(r'^static/',views.staticdata,name='statdetal'),   
+
     url(r'^shots_update/',views.update_shots,name='updt'),
+    url(r'^reporting/',views.create_projects_episodes,name='episde'),
     url(r'^arstist/',views.assignedshot,name='updteassigned'),
-    ]
+    url(r'^report/',views.reporting,name='reportgen'),
+    url(r'^report_popup/',views.reporting_popup,name='report_popup_gen'),
+    url(r'^collegedetils/',views.det,name='colid'),
+    url(r'^static_data_versionpopup/',views.det_popup,name='colid'),
+
+]

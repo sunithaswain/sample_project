@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'gatewaylogin',
     'gatewayimplematation',
+    #apipurpose
     'rest_framework',
 ]
 
@@ -81,7 +82,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'gatewayprocess.wsgi.application'
 
-AUTH_USER_MODEL = "gatewaylogin.UsersModel"
+AUTH_USER_MODEL = "gatewaylogin.UsersModel" #custom user authentication model
+
+# AUTH_USER_MODEL =""
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
