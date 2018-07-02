@@ -1,28 +1,110 @@
 {% extends 'base_index.html' %}
 {% block content %}
-<form action="{% url 'pctasked' %}" method="post" enctype="multipart/form-data">
-  {% csrf_token %}
-  <div class="form-group">
-    Upload<input type="file" name="myuploadfile" />
+<div class="container">
+  <!-- action="{% url 'pctasked' %}" -->
+<!-- <form  method="post" enctype="multipart/form-data">
+  {% csrf_token %} -->
+
+  <div class="row">
+    <div class="col-md-6"  style="float:left">
+    Upload<input type="file" name="myuploadfile" id="uploadinfo" class="btn btn-primary"/>
     <!-- <button type="upload" class="btn btn-primary">Upload</button>  -->
+   </div>
   </div>
-  <div class="form-group">
-    <button type="preview" class="btn btn-primary">preview</button>   
-  </div>  
-  <button type="submit" class="btn btn-primary">submit</button><br>
+  <br>
   {% if msg %}
   <p>{{msg}}</p>
-  {% endif %}
-  <label for="name">Id:</label>
-    <select name="ids" id="sunitha" onchange="myFunction()">
-        <option value="select ">select</option>
-        <option value="create tasks">create tasks</option>
-        <option value="create shots">create shots</option>
-    </select>
-</form>
+  {% endif %}  
+  <div class="row">
+    <div class="col-lg-6" style="float:left">
+    <!-- <label for="name">Id:</label> -->
+      <select name="ids" id="sunitha"  class="form-control" style="width:150px;">
+          <option value="select ">select</option>
+          <option value="create tasks">create tasks</option>
+          <option value="create shots">create shots</option>
+      </select>
+    </div>
+    <div class="col-md-6" style="float:left">
+    <button type="preview" id="preview_btn_id" class="btn btn-primary">preview</button> 
+  </div> 
+  </div>
+  <br>
+  <div id="preview_data">
+
+  </div>
+  <br>
+    <button type="button" id="submit_btn"  class="btn btn-primary">submit</button>
+<!-- </form> -->
 <script type="text/javascript">
+
+// ==== preview function start ======
+var file;
+$('input[type=file]').change(function () {
+      console.dir(this.files[0])
+})
+$("#preview_btn_id").click(function(){
+
+createtaskgetinfo=$("#sunitha").val()
+alert(createtaskgetinfo)
+getuploaddata1=$("#getuploaddata").val()
+alert(getuploaddata1);
+getuploaddata=document.getElementById("uploadinfo")
+alert(getuploaddata.files[0]);
+// alert(file);
+
+// filedata = getuploaddata.files[0]
+
+if(createtaskgetinfo!='select')
+{
+$.ajax({
+        type:"POST",
+        url:"/process/preivewgwtdata/",
+        data:{"check_taskinfo":createtaskgetinfo,'excel':'filedata'},
+        success:function(data)
+        {
+          // alert(data.task_info);
+          $("#preview_data").html(data.lists);
+          alert("success");
+        }
+      });
+ } 
+else{
+  alert("Please select option ")
+
+}
+
+});
+// ==== preview function end ======
+
+//====submit functionstart=====//
+
+$("#submit_btn").click(function(){
+
+optionvalueget=$("#sunitha").val()
+alert(optionvalueget);
+getuploaddata=document.getElementById("uploadinfo")
+alert(getuploaddata.files);
+
+if(optionvalueget!='select')
+{
+$.ajax({
+        type:"POST",
+        url:"/process/submit/",
+        data:{"check_taskinfo":optionvalueget},
+        success:function(data)
+        {          
+          alert("success");
+        }
+
+      });
+}
+else
+{alert('Choose one correct option!');}
+
+});
+//====submit function end =====//
+
 function myFunction () {
-  
   var status_value = document.getElementById("sunitha").value;
   //alert(event.target.id);
   alert(status_value);
@@ -54,10 +136,9 @@ function myFunction () {
   //      {alert("success");}
 
   //    });
-
 }
 
 </script>
 
-
+</div>
 {% endblock %}

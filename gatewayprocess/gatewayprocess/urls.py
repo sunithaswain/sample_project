@@ -40,6 +40,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^process/', include("gatewaylogin.urls")),
     url(r'^process1/', include("gatewayimplematation.urls")),
+    url(r'^mis/', include("management.urls")),
     url(r'^api-auth/', include('rest_framework.urls'))
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

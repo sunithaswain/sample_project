@@ -1,0 +1,138 @@
+{% extends 'base_index.html' %}
+{% block content %}
+<div>
+<input type="submit" name="submit_btn" value="Assestinfo" id="getdata"/>
+<script>
+$("#getdata").click(function(){
+var modal=document.getElementById('myPopupModal')
+modal.style.display = "block";
+alert("hii");
+});
+</script>
+<!-- $("#getdata").click(function(){
+alert(getdata);
+}); -->
+</div>
+<div id="myPopupModal" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <div class="modal-header">
+      <span class="close">&times;</span>
+      <h2 id="task_id_popup"></h2>
+    </div>
+    <div class="modal-body" id="modal_popup_data">
+    <!-- bootstrap form code start -->
+    <form>
+
+	    <div class="form-group">
+	    <label for="exampleFormControlSelect2">AssestTypes :</label>
+	    <select  class="form-control" id="exampleFormControlSelect2" onchange="assetTypeChange()">
+	      <option value="chars">chars </option>
+        <option value="props">props </option>
+        <option value="sets">sets </option>
+	    </select>
+	 	</div>
+    <div class="form-group" id="selData">
+      <label for="exampleFormControlSelect2">Name of assests :</label>
+      <select  class="form-control" id="exampleFormControlSelect3" onchange="Nameofassetschanged()">
+        <option value="Name of assests">Name of assests </option>      
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="exampleFormControlSelect4">Assestprocess :</label>
+      <select  class="form-control" id="exampleFormControlSelect4" onchange="Nameoftextures()">
+        <option value="rigging">rigging </option>
+        <option value="texturing">texturing </option>
+        <option value="texturing">texturing </option>    
+      </select>
+    </div>
+    <div class="form-group" id="namedat" >
+      <select id="supervisorinfo" class="form-control ">
+        <option value="Supervisor">Supervisor </option>
+      </select>
+    </div>
+    <div>
+      <input type="text" id="des" value="Description" class="form-control">
+    </div>
+    <div>
+      <input type="button" id="var" value="submit">
+   </div>
+ </div>
+<script>
+function assetTypeChange(){
+getchars=$('#exampleFormControlSelect2').val()
+// alert(getchars)
+$.ajax({
+      type:"GET",
+      url:"/process/assestdata/",
+      data:{"getinfo":getchars},
+      success:function(data)
+      {
+        // alert("success ");
+        // alert(data.sss);
+        assestdat=$('#selData').html(data.sss)
+      }
+      });
+
+}
+</script>
+<script>
+function Nameoftextures(){
+gettexture=$('#exampleFormControlSelect4').val()
+// alert(gettexture)
+$.ajax({
+      type:"GET",
+      url:"/process/assestdata/",
+      data:{"textre":gettexture},
+      success:function(data)
+      {
+        // alert("success ");
+        // alert(data)
+        // alert(data.sup);
+        supeda=$('#namedat').html(data.sup)
+      }
+
+           });
+}
+</script>
+<script>
+$("#var").click(function(){
+descriptiontype=$('#des').val()
+getassesttype=$('#exampleFormControlSelect2').val()
+get_name_of_asset=$('#exampleFormControlSelect3').val()
+get_asset_processes=$('#exampleFormControlSelect4').val()
+get_process_related_supervisor=$('#supervisorinfo').val()
+alert("hii");
+alert(descriptiontype);
+
+if(get_process_related_supervisor == 'Supervisor')
+{
+   alert('Please select supervisor id')
+}
+else
+{
+  if(get_name_of_asset=='Name of assests')
+  {
+   alert('Please select name of asests') 
+  }
+   else
+   {
+$.ajax({
+      type:"GET",
+      url:"/process/submitdata/",
+      data:{"asset_type":getassesttype,
+      'asset_name':get_name_of_asset,'asset_process':get_asset_processes,'process_sup':get_process_related_supervisor,'descpritioninfo':descriptiontype},
+      success:function(data)
+      {
+        alert("success ");
+        alert(data.message)
+        var modal=document.getElementById('myPopupModal')
+       modal.style.display = "none"; 
+      }
+  });
+  }//inner else end
+}// else end
+});
+</script>
+{% endblock %}

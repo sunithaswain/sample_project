@@ -1,0 +1,157 @@
+{% extends 'base_index.html' %}
+{% block content %}
+<div>
+<input type="submit" name="submit_btn" value="RendingLayers" id="getrenderdat"/>
+<script>
+$("#getrenderdat").click(function(){
+  var modal=document.getElementById('myPopupModal')
+modal.style.display = "block";
+alert("hii");
+});
+</script>
+</div>
+<div id="myPopupModal" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content" style="width:700px;">
+    <div class="modal-header">
+      <span class="close">&times;</span>
+      <h2 id="task_id_popup"></h2>
+    </div>
+    <div class="modal-body" id="modal_popup_data">
+    <!-- bootstrap form code start -->
+    
+    <table id="layers_table" style="width:300px;" border="1">
+      <tr>
+          <th>SNO</th>
+          <th>Layers</th>
+          <th>From frame</th>
+          <th>To frame</th>
+          <th>Total frames</th>
+          <th>Priority</th>
+          <th>Renderdepth</th>
+    </tr>
+    {%for i in layers%}
+  <tr>
+    <td>
+      <input type="checkbox" id="nam-{{i}}" name="newcheck" value="">
+    </td>
+    <td >{{i}}</td>
+    <td >
+    <input type="text"  value="1" id="firstinfo-{{i}}" onkeyup="myFunction()"style="width:30px;">
+    </td>
+    <td >
+    <input type="text" name="2" value="32" id="secondinfo-{{i}}" onkeyup="myFunction()"style="width:30px;">
+    </td>
+    <td >
+    <input type="text" name="8" value="8 "id="thirdinfo-{{i}}"  style="width:30px;">
+    </td>
+    <td >
+      <select id="priority-{{i}}">
+       {%for each in process%}
+       <option value="{{each}}">{{each}} </option>
+       {%endfor%}
+      </select>  
+    </td>
+    <td>
+    <select id="render-{{i}}">
+    {%for each2 in data%}      
+      <option value="{{each2}}">{{each2}} </option>
+      {%endfor%}
+    </select>
+    </td>
+  </tr>
+  {%endfor%}
+  </table>
+    </div>
+    <div>
+      <input type="button" id="var" value="submit">
+   </div>
+ </div>
+});
+</script>
+<script>
+function myFunction() {
+    var x = document.getElementById("fname");      
+    
+    // $('#thirdinfo').val(finalinfo)
+  // alert(finalinfo);
+  // alert(event.target.id)
+  first_id = event.target.id;
+  newdata=first_id.split("-")[1]
+  // alert(newdata);
+  newfirstinfo="#firstinfo-"+newdata
+  newsecondinfo="#secondinfo-"+newdata
+  // alert(newsecondinfo)
+  newthirdinfo="#thirdinfo-"+newdata
+  // alert(newthirdinfo)
+  f_value=$(newfirstinfo).val()
+  s_value=$(newsecondinfo).val() 
+  // chekboxdata=$(nam).val() 
+  // alert(s_value);
+  // alert(t_value);
+  subinfo=s_value-f_value
+  $(newthirdinfo).val(subinfo)
+}
+</script>
+<script>
+$("#var").click(function(){
+// alert("sub")
+
+aa=$('input[name="newcheck"]')
+alert(aa.length)
+var final_array = new Array();
+for(i=0; i<aa.length; i++)
+{
+  if(aa[i].checked==true)
+  {
+    array1 = []
+    // alert(aa[i].id)
+    check_box_id = aa[i].id
+    newdata=check_box_id.split("-")[1]
+    alert(newdata)
+    newfirstinfo="#firstinfo-"+newdata
+    newsecondinfo="#secondinfo-"+newdata  
+    newthirdinfo="#thirdinfo-"+newdata
+    newfourthinfo="#priority-"+newdata
+    newfifthinfo="#render-"+newdata
+    from_frame=$(newfirstinfo).val()
+    to_frame=$(newsecondinfo).val()
+    total_frame=$(newthirdinfo).val()
+    priority=$(newfourthinfo).val()
+    render_depth=$(newfifthinfo).val()  
+     array1.push(newdata)     
+     array1.push(from_frame)
+     array1.push(to_frame)
+     array1.push(total_frame)
+     array1.push(priority)
+     array1.push(render_depth)
+     final_array.push(array1)
+
+
+
+  }
+
+
+
+}
+alert(final_array)
+
+$.ajax({
+  type:"GET",
+      url:"/process/renderinfo/",
+      data:{"renderdetails":final_array},
+      success:function(data)
+      {
+        alert("hi success")
+      }
+
+  });
+
+  //   $("input[name='newcheck']").each( function () {
+  //       alert($(this).val());
+  // });
+});
+</script>
+</div>
+{% endblock %}

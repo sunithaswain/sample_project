@@ -1,59 +1,215 @@
-{% extends 'base.html' %}
-
+{% extends 'base_index.html' %}
 {% block content %}
+<div class="mainDiv" onload="display()">
+	<div class="form-group" >
+    <label for="name">StartDate:</label>
+    <input type="date" id="buttondata" name="start_date">
+    <label for="name">EndDate:</label>
+    <input type="date" id="buttonid" name="end_date">
+    <button type="submit" id="date_submit_btn" class="btn btn-primary">Submit</button>
+  </div>
 <br>
-<table border="1">
-<thead>
-	<th>Login</th>
-	<th>Assigned</th>
-	<th>Process</th>
-	<th>Supervisor</th>
-	<th>Status</th>
-</thead>
+<br>
+  <div id="tableData">
+  	<table class = "table" border="1">
+  	<thead>
+  		<th>Task No</th>
+  		<th>Assigned</th>
+  		<th>Process</th>
+  		<th>Supervisor</th>
+  		<th>Status</th>
+  		<th>Time</th>
+  		<th>reallot</th>
+  		<th>asset_data</th>
+  		<th>renderlayer</th>
+  	</thead>
+  	{%for i in details%}
+  		<tr>
+  			<td id="get_id">{{i.id}}</td>			
+  			<td>{{i.assigned}}</td>
+  			<td>{{i.process}}</td>
+  			<td>{{i.supervisor}}</td>	
+  			<td>{{i.status}}</td>
+  			<td>{{i.created_at}}</td>
+  			<td><button type="button" class="btn btn-danger reAllotBtn" id="{{i.id}}" name="reallot">reallot</button></td>
 
-{%for i in details%}
+  			{%if i.process == 'secondary'%}
+  			<td><button type="button" class="btn btn-success assetBtn " id="getassest" name="assest_name">assest_name</button></td>
+  			{%else%}
+  			<td>-</td>
+  			{%endif%} 
 
-	<tr>
-		<td id="get_id">{{i.login}}</td>
-		<td>
-			<select id="mySelects">
-				{% for j in assigned %}					
-					{%if i.assigned == j %}
-						<option value="{{i.assigned}}" selected="selected">{{i.assigned}}</option>
-		  			{%else%}
-						<option value="{{j}}">{{j}}</option>
-					{%endif%}
-				{% endfor %}
-			</select>
-			<p id="demo"></p>
-		</td> 
-		<!-- <td>{{i.assigned}}</td> -->
+  			{%if i.process == 'ligthing'%}
+  			<td><button type="button" class="btn btn-success renderbtn " id="renderdata_{{i.id}}" name="rendername">renderlayer</button></td>
+  			{%else%}
+  			<td>-</td>
+  			{%endif%}
+  			
+  		</tr>
+  		{%endfor%}
+  	</table>
+  </div>
+  <!-- re allotment modal popup -->
+  <div id="myPopupModal" class="modal">
 
-		<td>{{i.process}}</td>
-		<td>{{i.supervisor}}</td>
+    <!-- Modal content -->
+    <div class="modal-content">
+      <div class="modal-header">
+        <span class="close">&times;</span>
+        <h2 id="task_id_popup">Sunitha</h2>
+      </div>
+      <div class="modal-body" id="modal_popup_data">  
 
-		<td>
-			<select id="mySelect" onchange="myFunction()">			  	
-			  	{% for j in status %}
-			  		{%if i.status == j %}
-			  			<option value="{{i.status}}" selected="selected">{{i.status}}</option>
-			  		{%else%}
-						<option value="{{j}}">{{j}}</option>
-					{%endif%}
-				{% endfor %}
-				
-			</select>
-			<p id="demo"></p>
-		
-				
-		</td>
+      <!-- bootstrap form code start -->
+      <form>
 
-		<!-- <td>{{i.status}}</td> -->
+  	    <div class="form-group">
+  	    <label for="exampleFormControlSelect2">Assign To :</label>
+  	    <select  class="form-control" id="exampleFormControlSelect2">
+  	      <option value="select">select </option>
+      	{%for i in keydevelopers%}
+      
+      	<option value="{{i}}">{{i}}</option>
+      	{%endfor%}      
+  	    </select>
+  	 	</div>
+    
+    	
+  	  	<div class="form-group">
+  		    <label for="exampleFormControlTextarea1">Description</label>
+  		    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+  	  	</div>
+  	</form>     
 
-	</tr>
+  	<button type="button" class="btn btn-primary" id="iddata" name="submit">Reallot-Submit
+  	</button>
+      </div>
+  	
+      <div class="modal-footer">
+        <h3>Modal Footer</h3>
+      </div>
+    </div>
+  </div>
+  <!-- re allotment modal popup end -->
 
-	{%endfor%}
-</table>
+
+<!-- render informodal popup start  -->
+<div id="render_popupinfo" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <div class="modal-header">
+      <span class="close1">&times;</span>
+      <h2 id="renderidinfo">ids</h2>
+    </div>
+    <div class="modal-body" id="modal_popup_data">
+
+    <!-- bootstrap form code start -->
+      
+    <table id="layers_table" style="width:300px;" border="1">
+      <tr>
+          <th>SNO</th>
+          <th>Layers</th>
+          <th>From frame</th>
+          <th>To frame</th>
+          <th>Total frames</th>
+          <th>Priority</th>
+          <th>Renderdepth</th>
+    </tr>
+    {%for i in layers%}
+  <tr>
+    <td>
+      <input type="checkbox" id="nam-{{i}}" name="newcheck" value="">
+    </td>
+    <td >{{i}}</td>
+    <td >
+    <input type="text"  value="1" id="firstinfo-{{i}}" onkeyup="myFunction()"style="width:30px;">
+    </td>
+    <td >
+    <input type="text" name="2" value="32" id="secondinfo-{{i}}" onkeyup="myFunction()"style="width:30px;">
+    </td>
+    <td >
+    <input type="text" name="8" value="8 "id="thirdinfo-{{i}}"  style="width:30px;">
+    </td>
+    <td >
+      <select id="priority-{{i}}">
+       {%for each in process%}
+       <option value="{{each}}">{{each}} </option>
+       {%endfor%}
+      </select>  
+    </td>
+    <td>
+    <select id="render-{{i}}">
+    {%for each2 in data%}      
+      <option value="{{each2}}">{{each2}} </option>
+      {%endfor%}
+    </select>
+    </td>
+  </tr>
+  {%endfor%}
+  </table>
+    </div>
+    <div>
+      <input type="button" id="submitvar" value="submit">
+   </div>
+  </div>
+
+ </div>
+ <!-- render informodal popup end  -->
+
+<!-- asset informodal popup start  -->
+<div id="popupinfo" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <div class="modal-header">
+      <span class="modalclose">&times;</span>
+      <h2 id="asset_id_popup"></h2>
+    </div>
+    <div class="modal-body" id="modal_popup_data">
+    <!-- bootstrap form code start -->
+    <form>
+
+	    <div class="form-group">
+	    <label for="exampleFormControlSelect2">AssestTypes :</label>
+	    <select  class="form-control" id="getassesttypeid" onchange="assetTypeChange()">
+	      <option value="chars">chars </option>
+        <option value="props">props </option>
+        <option value="sets">sets </option>
+	    </select>
+	 	</div>
+    <div class="form-group" id="selData">
+      <label for="exampleFormControlSelect2">Name of assests :</label>
+      <select  class="form-control" id="exampleFormControlSelect3" onchange="Nameofassetschanged()">
+        <option value="Name of assests">Name of assests </option>      
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="exampleFormControlSelect4">Assestprocess :</label>
+      <select  class="form-control" id="exampleFormControlSelect4" onchange="Nameoftextures()">
+        <option value="rigging">rigging </option>
+        <option value="texturing">texturing </option>
+        <option value="texturing">texturing </option>    
+      </select>
+    </div>
+    <div class="form-group" id="namedat" >
+      <select id="supervisorinfo" class="form-control ">
+        <option value="Supervisor">Supervisor </option>
+      </select>
+    </div>
+    <div>
+      <input type="text" id="des" value="Description" class="form-control">
+    </div>
+    <div>
+      <input type="button" id="var" value="submit">
+   </div>
+ </div>
+
+<!-- asset informodal popup end -->
+
+<!-- asset informodal popup end -->
+
+
 
 <script type="text/javascript">
 function myFunction () {
@@ -108,14 +264,151 @@ function myFunctions() {
 
 				success:function(data)
 				{alert("success");}
-
+                
 			});
 
 }
 
+</script><script>
+$(".assetBtn").click(function(){
+	alert("hii")
+	var modal = document.getElementById('popupinfo');
+		  var span = document.getElementsByClassName("modalclose")[0];
+
+		 modal.style.display = "block";
+
+		 span.onclick = function() {
+    		modal.style.display = "none";
+		}
+
+
+
+	});
+</script>
+<script>
+function assetTypeChange(){
+getchars=$('#getassesttypeid').val()
+// alert(getchars)
+$.ajax({
+      type:"GET",
+      url:"/process/assestdata/",
+      data:{"getinfo":getchars},
+      success:function(data)
+      {
+        // alert("success ");
+        // alert(data.sss);
+        assestdat=$('#selData').html(data.sss)
+      }
+      });
+
+}
+</script>
+<script>
+function Nameoftextures(){
+gettexture=$('#exampleFormControlSelect4').val()
+// alert(gettexture)
+$.ajax({
+      type:"GET",
+      url:"/process/assestdata/",
+      data:{"textre":gettexture},
+      success:function(data)
+      {
+        // alert("success ");
+        // alert(data)
+        // alert(data.sup);
+        supeda=$('#namedat').html(data.sup)
+      }
+
+           });
+}
+</script>
+<script>
+$("#var").click(function(){
+descriptiontype=$('#des').val()
+getassesttype=$('#getassesttypeid').val()
+get_name_of_asset=$('#exampleFormControlSelect3').val()
+get_asset_processes=$('#exampleFormControlSelect4').val()
+get_process_related_supervisor=$('#supervisorinfo').val()
+alert("hii");
+alert(descriptiontype);
+
+if(get_process_related_supervisor == 'Supervisor')
+{
+   alert('Please select supervisor id')
+}
+else
+{
+  if(get_name_of_asset=='Name of assests')
+  {
+   alert('Please select name of asests') 
+  }
+   else
+   {
+$.ajax({
+      type:"GET",
+      url:"/process/submitdata/",
+      data:{"asset_type":getassesttype,
+      'asset_name':get_name_of_asset,'asset_process':get_asset_processes,'process_sup':get_process_related_supervisor,'descpritioninfo':descriptiontype},
+      success:function(data)
+      {
+        alert("success ");
+        alert(data.message)
+        var modal=document.getElementById('popupinfo')
+       modal.style.display = "none"; 
+      }
+  });
+  }//inner else end
+}// else end
+});
+</script>
+<!-- func calling from viewsfor modal popup in relloct,assetdata -->
+<script>
+function sunitha(){
+  alert("hii")
+
+  var modal = document.getElementById('myPopupModal');
+    alert("ds s done");
+    // alert(this.id);
+    // var task_id = this.id;
+    var task_id = event.target.id;
+    console.log(this.id);
+    $("#task_id_popup").html("Reallotment of Task No: "+task_id)
+    // to visible our modal popup
+    modal.style.display = "block";
+          
+    
+}
+
+function assestnamesunitha(){
+  alert("asset")  
+  var modal = document.getElementById('popupinfo');
+  alert("hello");
+  var task_id = event.target.id;
+  console.log(this.id);
+  $("#asset_id_popup").html("Asset Concern of Task No: "+task_id)
+  modal.style.display="block";
+}
+      // var span = document.getElementsByClassName("modalclose")[0];
+
+// function renderlayers(){
+//   alert("render layers  starting ..")
+//     var modal = document.getElementById('render_popupinfo');
+//       alert("hello");
+//   var task_id = event.target.id;
+//   console.log(this.id);
+//   $("#renderidinfo").html("Render Concern of Task No: "+task_id)
+//   modal.style.display="block";
+// }
+</script>
+<script>
+$("#submitvar1").click(function(){
+alert("hello");
+});
 </script>
 
 
 
-{% endblock %}
 
+</div>
+
+{% endblock %}

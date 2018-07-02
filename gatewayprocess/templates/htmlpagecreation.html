@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<script>
+function submit(){
+
+alert("pichi pilla");
+
+$.ajax({
+	type:"GET",
+	url:"/process/creation_v2/",
+	data:{'wish':"hi"},
+	success:function(data)
+	{
+		alert(data.success_data);
+
+		$("#click_table_data").html(data.success_data);
+		alert("success");
+	}
+			});
+
+}
+</script>
+
+<input type="button" onclick="submit()" value="click"></input>
+
+
+<div id="click_table_data"></div>
+
+{%endblock%}

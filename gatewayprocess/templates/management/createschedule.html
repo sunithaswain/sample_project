@@ -1,0 +1,50 @@
+{% extends 'base_index.html' %}
+{% block content %}
+<div>
+	<!-- ui part -->
+	<div>
+		<input type="date" id="st_date" name="start_date"></input>
+		<input type="date" id="e_date" name="end_date"></input>
+		<select id="projectid">
+			{%for i in pro%}
+			<option value="{{i}}">{{i}}</option>
+			{%endfor%}
+		</select>
+		<select id="epid">
+			{%for i in ep%}
+			<option value="{{i}}">{{i}}</option>
+			{%endfor%}
+		</select>
+		<button type="submit" id="submitid" form="form1" value="Submit">Submit</button>	
+		</div>
+	<!-- dategetinfo -->
+<script>
+$("#submitid").click(function(){
+stval=$("#st_date").val()
+entval=$("#e_date").val()
+projectval=$("#projectid").val()
+epsdeval=$("#epid").val()
+// alert(stval);
+// alert(entval,projectval,epsdeval);
+// ajax(after clicking submit it should save in db)
+	if (stval!="" || entval !="")
+	 	$.ajax({
+				type:"GET",
+				url:"/mis/create_scheduler/",
+	 			data:{"startdata":stval,"enddata":entval,"proinfo":projectval,"epde":epsdeval},
+	 			success:function(data)
+				{
+					alert(data.message);
+					// $("#tableData").html(data.task_info);
+					// alert("success");
+				}
+			});
+	else
+	{
+		alert("Please select dates")
+	}
+});
+</script>
+</div>
+
+{% endblock %}

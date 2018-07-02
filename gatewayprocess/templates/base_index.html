@@ -6,11 +6,23 @@
 	<meta charset="UTF-8">
 	<title>GATEWAY</title>
 	<link rel="stylesheet" href="{{ STATIC_URL }}css/style.css" type="text/css">
+	<link rel="stylesheet" href="{{ STATIC_URL }}css/drop_down.css" type="text/css">
 	<link rel="stylesheet" href="{{ STATIC_URL }}css/modal_popup.css" type="text/css">
 	<script src="{{ STATIC_URL }}js/jquery-3.2.1.min.js"></script>
+
 	<link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap.min.css" type="text/css">
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.debug.js"></script>
 
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.sumoselect/3.0.2/sumoselect.min.css">
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.sumoselect/3.0.2/jquery.sumoselect.min.js"></script>
+
+
+
+<style type="text/css">
+/*#layers_table tr th{width:10px;}*/
+#layers_table tr td{width:10px;}
+</style>
 
 </head>
 <body>
@@ -50,15 +62,21 @@
 				<li>
 					<a href="{%url 'similars'%}">My Tickets</a>
 				</li>
-				<li>
+				<!-- <li>
 					<a href="{%url 'generating'%}">Raise Ticket</a>
 					
-				</li>
+				</li> -->
 				{% endif %}
 				{% if request.user.user_role == 1 %}
 				<li>
+					<a href="{%url 'generating'%}">Raise Ticket</a>
+				</li>
+				<li>
 					<a href="{%url 'shotversior'%}">My Shots </a>
 					
+				</li>
+				<li>
+					<a href="{%url 'tasking'%}">check update for supervisor </a>
 				</li>
 
 				{% endif %}
@@ -75,6 +93,7 @@
 			</ul>
 		</div>
 	</div>
+	
 	{% block content %}
 
 	{% endblock %}
@@ -118,5 +137,8 @@
 			</div>
 		</div>
 	</div>
+
+<!-- task js -->
+	<script src="{{ STATIC_URL }}js/task_call.js"></script>
 </body>
 </html>

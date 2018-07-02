@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from .models import UsersModel,episodes,subjectdetails,project,models,upload_files,Tasks,Shots,genticketing
+from .models import UsersModel,renderdata,episodes,subjectdetails,project,models,upload_files,Tasks,Shots,genticketing,assests,creteassestdata
 from .forms import loginform,changeform,ticketlogform,ExcelUploadForm
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
@@ -9,8 +9,12 @@ from django.contrib.auth import login as auth_login
 from django.contrib.auth import authenticate
 from django.conf import settings
 from xlrd import open_workbook
+import datetime
 import os
 import xml.etree.ElementTree as ET
+from django.utils import timezone
+import pytz
+from django.views.decorators.csrf import csrf_exempt
 #login functionality
 def login(request):
     ''' Login '''
@@ -18,19 +22,20 @@ def login(request):
     print ("login view")
     if request.method == 'POST':
         form = loginform(request.POST)  
-        print ('after post method')      
+        print ('after post method')  
+        print request.POST    
         password = request.POST.get('password')
         name = request.POST.get('Firstname')   
         print (name, password)     
         if form.is_valid():
             print ('form is valid')
             user = authenticate(username=name,password=password)        
-            print ("valid")           
-                          
+            #print ("valid")                                     
             auth_login(request, user)
             # auth_login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+            #print name
             user_id = UsersModel.objects.filter(username=name)
-            print (user_id)
+            print (user_id),":::::::::::::::::::::::::"
             for i in user_id:
                 if i.user_role == 1:
                     print ('supervisor|upper')
@@ -60,14 +65,47 @@ def login(request):
 
 @login_required(login_url='/process/log/')
 def profile(request): 
-    print (request.user.username)   
+    print (request.user.username)  
+    print request.user 
+    get_Data = UsersModel.objects.get(id=1)
+    print "get method"
+    print get_Data
+    print type(get_Data)
+    print get_Data.email
+    # get_Data1 = UsersModel.objects.filter(id=80)
+    # print get_Data1
+
     user_id = UsersModel.objects.filter(username=request.user.username)
+    # print user_id
+    # print type(user_id)
+    # print "***"
+    # all_data = UsersModel.objects.all()
+    # print all_data
+    # print type(all_data)
+
+    # for i in all_data:
+    #     print i.username
+    # print "***"
+
+    # val = UsersModel.objects.values()
+    # print val
+    # print type(val)
+    
+    # for i in val:
+    #     print i['username']
+    
+
     return render(request, 'profile.html', {'data':user_id})
 #setting the newuserand pwd
 def create_new_user(request):
-    users = UsersModel.objects.create(username='1800',user_role=1,email="appalbudda@gmail.com",
-        first_name="aneesgadu")
+    # users = UsersModel.objects.create(username='1400',user_role=2,email="budda@gmail.com",
+    #     first_name="sunitha")
+
+    users = UsersModel.objects.get(username='p6852')
+
     users.set_password("gateway@123")
+
+
     users.save()
     # var = UsersModel.objects.all()
     # for i in var:
@@ -76,9 +114,10 @@ def create_new_user(request):
 
     #     data.set_password("gateway@143")
     #     data.save()
-    return HttpResponse('user created or updated')
+    return HttpResponse('use created or updated')
 
 @login_required(login_url='/process/log/')
+# @login_required
 #change password
 def changingpassword(request):
     print (request.user.id)
@@ -115,33 +154,207 @@ def logoutin(request):
 @login_required(login_url='/process/log/')    
 #tasking status 
 def taskin(request):            
-    user = Tasks.objects.all()
-    print (">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-    list1 = ['STATUS','ACCEPTED','WIP', 'COMPLETE']
-    print("Task successfully created")
-    list2 = ['ASSIGNED','p6852','p6851','p6857', 'p6855']
-    print("Task successfully created")
-    if request.method == 'GET':
-        print ('tasking')
-        print (request.GET)
+    tasks_data_all = Tasks.objects.all()
+    #print "===="*20
+    #print type(tasks_data_all)
+    #print tasks_data_all
+    #print "===="*20
 
+    # for kk in user:
+    #     print kk.created_at,"$$$$"
+    layerdat=["char_matte","bg_matte","char_clr"]
+    prioity=["high","medium","low"]
+    renderinfo=["select","all_passes","few_passes"]
+    # print (">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+    list1 = ['STATUS','ACCEPTED','WIP', 'COMPLETE']
+    # print("Task successfully created")
+    list2 = ['ASSIGNED','p6852','p6851','p6857', 'p6855']
+    # print("Task successfully created")
+    #####################################
+    userdata=UsersModel.objects.values()
+    #print userdata,"{{{{{{{{{{{["
+    #print "===="*20
+
+    developers_list = []
+    for each in userdata:
+        #print each,"eeeeeeeeeeeee"
+        if each["user_role"]==3:
+            developers_list.append(each["username"])
+    #print "**************"  
+    #print developers_list
+    ###################################
+
+    if request.method == 'GET':
+
+        #print "for dates gettinginfo"
+        dateinfo1=request.GET.get('check_date1') 
+        dateinfo2=request.GET.get('check_date2')
+        
+        #print dateinfo1,dateinfo2,">>>"
+        # datetime_object = datetime.strptime('dateinfo1', '%M %d %Y')
+        if dateinfo1 and dateinfo2:
+            #print "s"
+            dateinfo1=dateinfo1.split('-')
+            dateinfo2=dateinfo2.split('-')
+            #print dateinfo1[::-1]       
+            dateinfo1 = [str(x)for x in dateinfo1]
+            #print dateinfo1,"}}}}}}}]"
+            dateinfo2 = [str(x)for x in dateinfo2]
+            #print dateinfo2,">>>>>>>>>"
+            st_date = datetime.date(int(dateinfo1[0]),int(dateinfo1[1]),int(dateinfo1[2]))
+            #print st_date,"<<<<<<<<"
+            st1_date=datetime.date(int(dateinfo2[0]),int(dateinfo2[1]),int(dateinfo2[2]))
+            #print st1_date,"sssss"
+            # data = Tasks.objects.filter(created_at__contains=st_date)
+            # print data,"getttig data"
+
+            # datainfo1=datainfo1, datainfo2=datainfo2
+            # s_date=datetime.strptime(str(dateinfo1), '%m-%d-%Y %H:%M:%S.%f')
+
+            ## below query is getting date range data
+            ##_______________created_at__range=database lo column name#________#
+            date_range_tasks=Tasks.objects.filter(created_at__range=(st_date, st1_date))
+
+            #print date_range_tasks,"##################"
+            
+            # return JsonResponse
+
+            # datetime_object = datetime.strptime('dateinfo1', '%b %d %Y %I:%M%p')
+            # print date_range_tasks,">>>>>>"
+
+            # server.query('tasks',filters=[['creaetd_at','in',[101,123]],['name','sunitha']])
+            # server.query('tasks',filters=[[]])
+
+            data_list = []
+            # [[],[],[]]
+            for i in date_range_tasks:
+                r_list = []
+                r_list.append(i.id)
+                r_list.append(i.assigned)
+                r_list.append(i.process)
+                r_list.append(i.supervisor)
+                r_list.append(i.status)
+                r_list.append(i.created_at) 
+                #print "&&&&" , i.created_at, "&&&&"
+                r_list.append("Reallot")
+                r_list.append("asset_data")
+                r_list.append("render_layer")
+                data_list.append(r_list)
+
+            ''' generate table start '''
+
+            head_list = ['Task No','Assigned','Process','Supervisor','Status','Time','reallot','asset_data', 'render_layer']        
+            div_root = ET.Element('div')
+            tab = ET.SubElement(div_root, 'table',id="taskTable", clas='table',border='1')
+            thr_root = ET.SubElement(tab, 'tr')       
+            
+            for i in head_list:
+                tad = ET.SubElement(thr_root,'td').text=str(i)
+
+            #print "getting data",data_list
+            for  j in data_list:
+                # print j[0],"KKKKKKKKKKKKKKKKKKKKK"
+                tr_root = ET.SubElement(tab, 'tr')                
+                
+                # j = [12,'p6907','namita, 'lighting','date', 'reallot', 'asset_data','render_layer']
+                for k in j:
+                    # print j[0],"iiiii"
+                    print k
+
+                    if k == "Reallot":
+                        tad = ET.SubElement(tr_root,'td')
+                        # ET.SubElement(tad,'button',onclick="sunitha()",id="%s"%(j[0]), clas='btn btn-danger').text='Rellot'                       
+                        ET.SubElement(tad,'button',onclick="sunitha()",id="{0}".format(j[0]), clas='btn btn-danger').text='Rellot'                       
+
+                    
+                    elif k=="asset_data":
+                        tad = ET.SubElement(tr_root,'td')
+                        ET.SubElement(tad,'button',onclick="assestnamesunitha()",id="%s"%(j[0]),clas='btn btn-success').text='asset_data'
+                    elif k=="render_layer":
+                        # if k == "ligthing":
+                        tad = ET.SubElement(tr_root,'td')
+                        ET.SubElement(tad,'button',id="{0}".format(j[0]),type="button",clas='RenderBtn btn btn-primary suni').text='render_layer'
+                        # else:
+                        #     tad = ET.SubElement(tr_root,'td').text="-" 
+    
+                    else:
+                        tad = ET.SubElement(tr_root,'td').text=str(k)     
+
+
+            datewise_tasks_data = ET.tostring(div_root).replace('clas','class')
+            #print datewise_tasks_data,"[[[[["
+            # print popup_data
+
+            data = {'task_info':datewise_tasks_data}
+            # if data['is_taken']:
+            #     data['error_message'] = 'A user with this username already exists.'
+            return JsonResponse(data)
+
+        
+
+
+            ''' generate table end '''
+
+        else:
+            pass
+        
         getval=request.GET.get('check_this')        
         iddata=request.GET.get('user_id')
         assdata=request.GET.get('assign_dat')
         # print (getval,iddata),("<<<<<<<<<<<<")
-        print (assdata)
-
+        #print (assdata)
         update_data = Tasks.objects.filter(login=iddata).update(status=getval,assigned=assdata)
-
         print('task data updated')
+
+
         # to_update = TestModel.objects.filter(id=2).update(name='updated_name', key=new_key)
     else:
-        return render(request,'task.html',{'details':user,'status':list1,'assigned':list2}) 
+        return render(request,'task.html',{'details':tasks_data_all,'status':list1,'assigned':list2,'keydevelopers':developers_list}) 
 
         
-    return render(request,'task.html',{'details':user,'status':list1,'assigned':list2}) 
+    return render(request,'task.html',{'details':tasks_data_all,'status':list1,'assigned':list2,'keydevelopers':developers_list,"layers":layerdat,"process":prioity,"data":renderinfo}) 
+#======= reallotment task updation
+def reallot_task_update(request):
+    '''reallotment task updation'''
+
+    print request.GET, "####"
+
+    if request.method == "GET":
+        #assign_id  this s from models.py#
+        user = request.GET.get('assign_id')
+        task_id = request.GET.get('task_id')
+        print user,task_id, "^^^^^^^^^^^^^^^6"
+        # user = "p6852"
+        #username=database lo field name#
+        nameinfo=UsersModel.objects.filter(username=user)
+        # print nameinfo,"LLLL"
+        name=""
+        for i in nameinfo:
+            # print i.first_name
+            #first_name=database lo unna field name#
+            name=i.first_name
+        print name,user,task_id
+        dateinfo=datetime.datetime.today().strftime('%Y-%m-%d')
+        present_time = datetime.datetime.now()
+        print ">>>>>>>>>>>>",present_time
+        print dateinfo,"ddddd"
+        # dateinfo=UsersModel.objects.filter(last_login=user)
+        # for dat in dateinfo:
+        #     date=dat.last_login,"JJJJJJJJJJJJJ"
+        ### task update query
+        update_task = Tasks.objects.filter(id=task_id).update(assigned=user,supervisor=name,created_at=present_time)
+        # print update_task
+
+        print "reallotment updated"
+        success = {'msg':'reallotment updated'}
+        return JsonResponse(success)
+
+    pass
+
+#===============
+
 def gen_ticketing(request):            
-    # user = genticketing.objects.all()
+    # user = genticketing.objects.all()s
     success_message = ""
     if request.method == "POST":
         form = ticketlogform(request.POST)
@@ -173,6 +386,7 @@ def similar_ids (request):
     
     if request.method == 'GET':
         print ('tasking')
+        print request.GET
         statdata=request.GET.get('status_id')
         statid=request.GET.get('t_id')
         print(">>>>>>",statdata)
@@ -382,6 +596,7 @@ def excel_read(request):
     #             finally:
     #                 values.append(value)
     #         print 'list of data',values
+    return HttpResponse("tasks successfully inserted")
 
 
 
@@ -406,7 +621,7 @@ def task_read(request):
 def shotdata(request):            
     shotsdata = Shots.objects.all()
     return render(request,'shottask.html',{'details':shotsdata})
-def  shotsupervesior(request):
+def shotsupervesior(request):
     print request.user,">>>>"    
     # Shots.objects.filter(supervisor='1669.0').update(supervisor=int('1669'))
     shotsdata = Shots.objects.filter(supervisor=request.user)
@@ -646,10 +861,7 @@ def filteringdata(request):
             # break 
         data = ET.tostring(div_root).replace('clas','class')
 
-    return render(request,'staticdatas.html',{'listdata':firstpartadd, 'table_data':data})
-
-
-
+    return render(request,'staticdata.html',{'listdata':firstpartadd, 'table_data':data})
 
 def filteringdata_version2(request):
     get_all_records=subjectdetails.objects.all()
@@ -842,9 +1054,19 @@ def ajax_filter_data_studentdetails(request):
     ''' code for ajax request start '''
 
     if request.method == "GET":
-        print request.GET.get('sel_year')
-        print request.GET.get('sel_college')
-        s_data = subjectdetails.objects.filter(collegename=str(request.GET.get('sel_college')),year=str(request.GET.get('sel_year')))
+
+
+        print ">>>>>>>>>>>>>",request.GET
+        yearList=request.GET.getlist('sel_year[]')   
+        collegeList = request.GET.getlist('sel_college[]')
+        print collegeList,yearList,"LLLLLLLLLLLLL"
+
+        # yearList = ['2015','2017']
+        # collegeList = ['bsit','cbit']
+        print "&&&&&",yearList,collegeList
+        print  type(yearList)
+        # s_data = subjectdetails.objects.filter(collegename='bsit',year='2015')
+        s_data = subjectdetails.objects.filter(collegename__in=collegeList,year__in=yearList)
 
         final_list=data_calling(request,db_records=s_data)                
         first_list = ['collegename','year','ece','eee','cse']    
@@ -856,6 +1078,7 @@ def ajax_filter_data_studentdetails(request):
         return JsonResponse(response_data)
     #return render(request,)
     ''' code for ajax request end '''
+
 def tablecreationdata(request, head_list=[],first_list=[],name="",list1=[]):    
     div_root = ET.Element('div') # <div>
     tab = ET.SubElement(div_root, 'table', clas='table',border='1') # <div><table>
@@ -929,4 +1152,237 @@ def data_calling(request, db_records=[]):
         final_list.extend(college_wise_list)
     print final_list,">>>>>>>>>>"
     return final_list
+def shotdetails(request):
+    var=[]
+    shots=Shots.objects.values()
+    for each in shots:
+        if each["projectname"]=='mrr':
+            pass
+            var.append(each)
+    print var,"++++++++++"
+    return HttpResponse(var)
 
+def creationdata(request):   
+    
+    return render(request,'htmlpagecreation.html',{'sentdda':'data'})
+
+def creationdata_display(request):
+    import xml.etree.ElementTree as ET
+    div_root=ET.Element('html')
+    head=ET.SubElement(div_root,'head')
+    title=ET.SubElement(head,'title').text="Testing"    
+    div_body=ET.SubElement(div_root,'body')
+    table_root1=ET.SubElement(div_body,'table',border="1",cls="table")
+    headtitle=["Name","Gender"]
+    # headdata=["Arjun","Tilotama","Anitha","sunitha","namitha","raviraj","kavitha"]
+    names_list = [["Arjun",'M'],["Tilotama","F"],['Anitha','F'],['sunitha','F'],['namitha','F'],['raviraj','M'],['kavitha','F']]
+    th_root=ET.SubElement(table_root1,'tr',)
+    
+    for i in headtitle:
+        print i,"iiiiiiii"  
+        td_root=ET.SubElement(th_root,'th').text=str(i)
+
+    for j in names_list:
+        tr_root=ET.SubElement(table_root1,'tr')
+        for k in j:
+            td_root=ET.SubElement(tr_root,'td').text=str(k)    
+
+    table_data = ET.tostring(div_root).replace('cls','class')
+    print table_data
+    # with open('/home/sunitha/Desktop/data.html','w') as f:
+    #     f.write(data)
+    #     print data
+
+    if request.method == "GET":
+        data = {'success_data':table_data}
+        return JsonResponse(data)
+@csrf_exempt
+def previewinfo(request):
+    # seconddata=[]
+    if request.method=="POST":
+        print "&&&"*40
+        print request.POST
+        sheetinfo=request.POST.get('check_taskinfo')
+        print sheetinfo,"KKKKKKKK"
+        path = "/home/sunitha/Documents/practice_projects/data.xlsx"
+        seconddata=excelreadinfo(path=path,sheetinfo=sheetinfo)        
+        
+        table_root1=ET.Element('table',border="1",cls="table")
+        th_root=ET.SubElement(table_root1,'tr')
+        for i in seconddata[0]:
+            td_root=ET.SubElement(th_root,'th').text=str(i)
+        
+        for j in range(1,len(seconddata)):
+            # j indicates index, seconddata[1]
+            # tr_root1=ET.SubElement(table_root1,'tr').text=str(seconddata[j])
+            tr_root1=ET.SubElement(table_root1,'tr')
+            for val in seconddata[j]:
+                ET.SubElement(tr_root1,'td').text=str(val)    
+        table_data = ET.tostring(table_root1).replace('cls','class')
+        data = {'lists':table_data}       
+        
+        return JsonResponse(data)
+
+
+    return render(request,"pcmaster.html",{})
+def assest_task(request):
+    procesrel={'modeling':['96852','96851'],'rigging':['123','324'],'texturing':['1236','6788']}
+    asset_type = ['chars', 'sets', 'props']
+    if request.method=="GET":
+        assestdata = request.GET.get('getinfo')
+        texdat=request.GET.get('textre')
+        print texdat, "LLLLLL"
+        asset_names = {'chars':['tom','puppy'],'sets':['trainset'],'props':['set']}
+        if assestdata:            
+            print ">>>>",assestdata
+            if assestdata in asset_names.keys():
+                print asset_names[assestdata]
+                asset_names_values = asset_names[assestdata]
+                print asset_names_values
+
+                select_root = ET.Element('select', id="exampleFormControlSelect3", clas="form-control")
+                for charsinfo in asset_names_values:
+                    ET.SubElement(select_root, 'option').text=charsinfo
+
+                print ET.tostring(select_root)
+                select_data =  ET.tostring(select_root).replace('clas','class')
+                data = {'sss':select_data}
+                return JsonResponse(data)
+
+            else:
+                print "check"
+        elif texdat :
+            procesrel={'modeling':['96852','96851'],'rigging':['123','324'],'texturing':['1236','6788']}
+            print procesrel.keys() #['modeling','texturing']
+            if texdat in procesrel.keys():
+                supervisor_values = procesrel[texdat]
+                print supervisor_values
+                select_root = ET.Element('select', id="supervisorinfo", clas="form-control")
+                for charsinfo in supervisor_values:
+                    ET.SubElement(select_root, 'option').text=charsinfo
+
+                print ET.tostring(select_root)
+                select_data =  ET.tostring(select_root).replace('clas','class')
+                data = {'sup':select_data}
+                return JsonResponse(data)
+            
+        else:
+            print "else"
+    return render(request,'assestinfo.html',{"value":assestdata,'asset_types':asset_type})
+#def Assestconcern(request):
+    
+#     path = "/home/sunitha/Documents/practice_projects/data.xlsx"
+#     wb = open_workbook(path)
+#     print ifwb
+#     #print wb.sheet_by_name("assets")
+#     tasks = wb.sheet_by_name("assets")        
+#     print tasks
+#     chars = []
+#     props = []
+#     sets = []
+#     vehicles= []
+#     for row in range(tasks.nrows):              
+        
+#         number_of_rows = tasks.nrows
+#         number_of_columns = tasks.ncols        
+#         for column in range(tasks.ncols):
+#             # if tasks.cell(row,column).value == value:
+#             print column,"LLLLLL"
+#             print row, column
+#             value  = (tasks.cell(row,column).value)
+#             chars.append(tasks.cell(row,0).value)
+#             props.append(tasks.cell(row,2).value)
+#             sets.append(tasks.cell(row,1).value)
+#             vehicles.append(tasks.cell(row,3).value)
+#     charslist=list(set(chars))
+#     charslist.remove('chars')
+#     propslist=list(set(props))
+#     propslist.remove('props')
+#     setslist=list(set(sets))
+#     setslist.remove('sets')
+#     vehiclelist=list(set(vehicles))
+#     vehiclelist.remove('vehicles')
+#     ch = ",".join(charslist)
+#     print ch
+#     pr=",".join(propslist)
+#     se=",".join(setslist)
+#     vh=",".join(vehiclelist)
+#     # insertdta=assests.objects.create(chars=ch,props=pr,sets=se,vehicles=vh)    
+#     return HttpResponse(insertdta)
+#@csrf_exempt
+# def submitdata(request):
+#     if request.method=='POST':
+#         getselectboxval=request.POST.get('check_taskinfo')
+#         print getselectboxval,"LLLL"
+#         path= path = "/home/sunitha/Documents/practice_projects/data.xlsx"
+#         iterexcel=excelreadinfo(path=path,sheetinfo=getselectboxval)
+#         iterexcel.pop(0)
+#         for li in iterexcel:
+#             if getselectboxval=="create tasks":
+#                 createindata=Tasks.objects.create(login=li[0],supervisor=li[1],status=li[2],assigned=li[3],process=li[4])
+#             elif getselectboxval=="create shots":
+#                 createindata=Shots.objects.create(shotno=li[0],episode=li[1],projectname=li[2],supervisor=li[3],assigned=li[4],process=li[5],status=li[6])
+#             else:
+#                 pass
+#     return render(request,"pcmaster.html",{})
+# def excelreadinfo(path="",sheetinfo=""):
+#     seconddata=[]
+#     wb = open_workbook(path)
+#     sheetdet=wb.sheet_by_name(sheetinfo)
+#     print sheetdet,":::::::::"
+#     for row in range(sheetdet.nrows):              
+#         dd = []
+#         number_of_rows = sheetdet.nrows
+#         number_of_columns = sheetdet.ncols        
+#         for column in range(sheetdet.ncols):
+#             print column,"hhhh"
+#             value  = (sheetdet.cell(row,column).value)
+#             #print value,"KKKKK"
+#             # seconddata.append(value)
+#             dd.append(value)
+
+#         print list(set(dd))
+#         seconddata.append(list(set(dd)))
+#     print "KKKK",seconddata
+#     return seconddata
+# def asset_test(request):
+
+
+#     asset_type = ['chars', 'sets', 'props']
+#     asset_names = {'chars':['tom','puppy'],'sets':['trainset']}
+
+#     process = ['modeling','rigging','texturing']
+
+#     supervisors = {'modeling':['1550','1698']}
+def submitdat(request):
+    print "hello"
+    if request.method=="GET":
+        print request.GET, ">>>"
+        data1 = request.GET.get('asset_type')
+        print data1,"::::::"
+        data2=request.GET.get('asset_name')
+        data3=request.GET.get('asset_process')
+        data4=request.GET.get('process_sup')
+        descprition=request.GET.get('descpritioninfo')
+        print "}}}}}", descprition
+        finaldat=creteassestdata.objects.create(assesttypes=data1,nameofassests=data2,assestprocess=data3,processrelated=data4,descripition=descprition)
+        data = {'message':'inserted'}
+        return JsonResponse(data) 
+
+    else:
+        print "else"
+def render_task(request):
+    layerdat=["char_matte","bg_matte","char_clr"]
+    prioity=["high","medium","low"]
+    renderinfo=["select","all_passes","few_passes"]
+    if request.method=="GET":   
+        print request.GET
+        keys_list = request.GET.keys()     
+        for i in keys_list:
+            print "&&&&",request.GET.getlist(i)
+            dat = request.GET.getlist(i)
+            print dat[0],dat[1],dat[2],dat[3],dat[4],dat[5],dat[6]
+        
+            insertdatabase=renderdata.objects.create(layer=dat[0],fromframe=dat[1],toframe=dat[2],totalframe=dat[3],prioirty=dat[4],renderdepth=dat[5],task_ids=dat[6])
+
+    return render(request,'sendinglayers.html',{"layers":layerdat,"process":prioity,"data":renderinfo})

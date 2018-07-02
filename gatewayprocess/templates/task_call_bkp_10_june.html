@@ -1,0 +1,683 @@
+{% extends 'base_index.html' %}
+{% block content %}
+<div class="mainDiv" onload="display()">
+  <div class="form-group" >
+    <label for="name">StartDate:</label>
+    <input type="date" id="buttondata" name="start_date">
+    <label for="name">EndDate:</label>
+    <input type="date" id="buttonid" name="end_date">
+    <button type="submit" id="date_submit_btn" class="btn btn-primary">Submit</button>
+  </div>
+ <script>
+$( document ).ready(function() {
+    console.log( "ready!" );
+// alert('function')
+var today = new Date();
+var dd = today.getDate();
+var mm = today.getMonth()+1; 
+
+var yyyy = today.getFullYear();
+// alert(mm)
+// alert(dd)
+// alert(yyyy)
+if(dd<10){
+    dd='0'+dd;
+} 
+if(mm<10){
+    mm='0'+mm;
+} 
+var t = String(yyyy)+"-"+String(mm)+"-"+String(dd)
+// alert(t)
+// 2142018
+// 2018-02-13
+    // $('#buttondata').val("2018-02-13");
+    $('#buttondata').val(t);
+    $('#buttonid').val(t);
+    // alert('buttonid')
+
+});  
+  </script>
+
+  <!-- this for date getin details -->
+  <script>
+  $("#date_submit_btn").click(function(){
+  inputdat=$("#buttondata").val()
+  inputdat2=$("#buttonid").val()
+  alert(inputdat);
+  if(inputdat!="" && inputdat2!="")
+  {
+  $.ajax({
+        type:"GET",
+        url:"/process/task_call/",
+        data:{"check_date1":inputdat,"check_date2":inputdat2},
+        success:function(data)
+        {
+          alert(data.task_info);
+          $("#tableData").html(data.task_info);
+          alert("success");
+        }
+      });
+  }
+else{
+  alert("Please select dates ")
+
+}
+
+  });
+  function sunitha(){
+    alert("hi ")
+  }
+  </script>
+  <!-- this for date getin details --> 
+<br>
+<br>
+<div id="tableData">
+  <table class = "table" border="1">
+  <thead>
+    <th>Task No</th>
+    <th>Assigned</th>
+    <th>Process</th>
+    <th>Supervisor</th>
+    <th>Status</th>
+    <th>Time</th>
+    <th>reallot</th>
+    <th>asset_data</th>
+    <th>renderlayer</th>
+  </thead>
+
+  {%for i in details%}
+
+    <tr>
+      <td id="get_id">{{i.id}}</td>
+      <!-- <td>
+        <select id="mySelects">
+          {% for j in assigned %}         
+            {%if i.assigned == j %}
+              <option value="{{i.assigned}}" selected="selected">{{i.assigned}}</option>
+              {%else%}
+              <option value="{{j}}">{{j}}</option>
+            {%endif%}
+          {% endfor %}
+        </select>
+        <p id="demo"></p>
+      </td>  -->
+      <td>{{i.assigned}}</td>
+
+      <td>{{i.process}}</td>
+      <td>{{i.supervisor}}</td>
+      <!-- <td>
+        <select id="mySelect" onchange="myFunction()">          
+            {% for j in status %}
+              {%if i.status == j %}
+                <option value="{{i.status}}" selected="selected">{{i.status}}</option>
+              {%else%}
+              <option value="{{j}}">{{j}}</option>
+            {%endif%}
+          {% endfor %}
+          
+        </select>
+        <p id="demo"></p>
+      
+          
+      </td> -->
+
+      <td>{{i.status}}</td>
+      <td>{{i.created_at}}</td>
+      <!-- <td>{{i.asset_data}}</td> -->
+      <td><button type="button" class="btn btn-danger reAllotBtn" id="{{i.id}}" name="reallot">reallot</button></td>
+
+      {%if i.process == 'secondary'%}
+      <td><button type="button" class="btn btn-success assetBtn " id="getassest" name="assest_name">assest_name</button></td>
+      {%else%}
+      <td>-</td>
+      {%endif%} 
+      {%if i.process == 'ligthing'%}
+      <td><button type="button" class="btn btn-success renderbtn " id="renderdata_{{i.id}}" name="rendername">renderlayer</button></td>
+      {%else%}
+      <td>-</td>
+      {%endif%}
+      
+    </tr>
+    {%endfor%}
+  </table>
+</div>
+<!-- re allotment modal popup -->
+<div id="myPopupModal" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <div class="modal-header">
+      <span class="close">&times;</span>
+      <h2 id="task_id_popup"></h2>
+    </div>
+    <div class="modal-body" id="modal_popup_data">  
+
+    <!-- bootstrap form code start -->
+    <form>
+
+      <div class="form-group">
+      <label for="exampleFormControlSelect2">Assign To :</label>
+      <select  class="form-control" id="exampleFormControlSelect2">
+        <option value="select">select </option>
+      {%for i in keydevelopers%}
+    
+      <option value="{{i}}">{{i}}</option>
+      {%endfor%}      
+      </select>
+    </div>
+  
+    
+      <div class="form-group">
+        <label for="exampleFormControlTextarea1">Description</label>
+        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+      </div>
+  </form>
+  <!-- <input type="text" class="form-control">text</in -->
+    <!--bootstrap form code start  -->
+    <!-- <select class="form-control" >
+      <option value="select">select</option>
+      {%for i in keydevelopers%}
+    
+      <option value="{{i}}">{{i}}</option>
+      {%endfor%}      
+
+    </select> -->
+   
+
+  <button type="button" class="btn btn-primary" id="iddata" name="submit">Reallot-Submit
+  </button>
+    </div>
+
+  
+    <div class="modal-footer">
+      <h3>Modal Footer</h3>
+    </div>
+  </div>
+</div>
+<!-- re allotment modal popup end -->
+
+
+<!-- modal popup end -->
+<!-- render informodal popup start  -->
+<div id="render_popupinfo" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <div class="modal-header">
+      <span class="close1">&times;</span>
+      <h2 id="getidinfo">ids</h2>
+    </div>
+    <div class="modal-body" id="modal_popup_data">
+
+    <!-- bootstrap form code start -->
+      
+    <table id="layers_table" style="width:300px;" border="1">
+      <tr>
+          <th>SNO</th>
+          <th>Layers</th>
+          <th>From frame</th>
+          <th>To frame</th>
+          <th>Total frames</th>
+          <th>Priority</th>
+          <th>Renderdepth</th>
+    </tr>
+    {%for i in layers%}
+  <tr>
+    <td>
+      <input type="checkbox" id="nam-{{i}}" name="newcheck" value="">
+    </td>
+    <td >{{i}}</td>
+    <td >
+    <input type="text"  value="1" id="firstinfo-{{i}}" onkeyup="myFunction()"style="width:30px;">
+    </td>
+    <td >
+    <input type="text" name="2" value="32" id="secondinfo-{{i}}" onkeyup="myFunction()"style="width:30px;">
+    </td>
+    <td >
+    <input type="text" name="8" value="8 "id="thirdinfo-{{i}}"  style="width:30px;">
+    </td>
+    <td >
+      <select id="priority-{{i}}">
+       {%for each in process%}
+       <option value="{{each}}">{{each}} </option>
+       {%endfor%}
+      </select>  
+    </td>
+    <td>
+    <select id="render-{{i}}">
+    {%for each2 in data%}      
+      <option value="{{each2}}">{{each2}} </option>
+      {%endfor%}
+    </select>
+    </td>
+  </tr>
+  {%endfor%}
+  </table>
+    </div>
+    <div>
+      <input type="button" id="var" value="submit">
+   </div>
+  </div>
+  <script>
+function myFunction() {
+    var x = document.getElementById("fname");      
+    
+    // $('#thirdinfo').val(finalinfo)
+  // alert(finalinfo);
+  // alert(event.target.id)
+  first_id = event.target.id;
+  newdata=first_id.split("-")[1]
+  // alert(newdata);
+  newfirstinfo="#firstinfo-"+newdata
+  newsecondinfo="#secondinfo-"+newdata
+  // alert(newsecondinfo)
+  newthirdinfo="#thirdinfo-"+newdata
+  // alert(newthirdinfo)
+  f_value=$(newfirstinfo).val()
+  s_value=$(newsecondinfo).val() 
+  // chekboxdata=$(nam).val() 
+  // alert(s_value);
+  // alert(t_value);
+  subinfo=s_value-f_value
+  $(newthirdinfo).val(subinfo)
+}
+</script>
+<script>
+$("#var").click(function(){
+// alert("sub")
+iddetails=$('#getidinfo').html()
+alert(iddetails);
+aa=$('input[name="newcheck"]')
+alert(aa.length)
+var final_array = new Array();
+for(i=0; i<aa.length; i++)
+{
+  if(aa[i].checked==true)
+  {
+    array1 = []
+    // alert(aa[i].id)
+    check_box_id = aa[i].id
+    newdata=check_box_id.split("-")[1]
+    alert(newdata)
+    newfirstinfo="#firstinfo-"+newdata
+    newsecondinfo="#secondinfo-"+newdata  
+    newthirdinfo="#thirdinfo-"+newdata
+    newfourthinfo="#priority-"+newdata
+    newfifthinfo="#render-"+newdata
+    from_frame=$(newfirstinfo).val()
+    to_frame=$(newsecondinfo).val()
+    total_frame=$(newthirdinfo).val()
+    priority=$(newfourthinfo).val()
+    render_depth=$(newfifthinfo).val()  
+     array1.push(newdata)     
+     array1.push(from_frame)
+     array1.push(to_frame)
+     array1.push(total_frame)
+     array1.push(priority)
+     array1.push(render_depth)
+     array1.push(iddetails)
+
+     final_array.push(array1)
+
+
+
+  }
+
+
+
+}
+alert(final_array)
+
+$.ajax({
+  type:"GET",
+      url:"/process/renderinfo/",
+      data:{"renderdetails":final_array},
+      success:function(data)
+      {
+        alert("hi success")
+      }
+
+  });
+
+  //   $("input[name='newcheck']").each( function () {
+  //       alert($(this).val());
+  // });
+});
+</script>
+
+ </div>
+ <!-- render informodal popup end  -->
+
+<!-- asset informodal popup start  -->
+<div id="popupinfo" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <div class="modal-header">
+      <span class="modalclose">&times;</span>
+      <h2 id="task_id_popup"></h2>
+    </div>
+    <div class="modal-body" id="modal_popup_data">
+    <!-- bootstrap form code start -->
+    <form>
+
+      <div class="form-group">
+      <label for="exampleFormControlSelect2">AssestTypes :</label>
+      <select  class="form-control" id="getassesttypeid" onchange="assetTypeChange()">
+        <option value="chars">chars </option>
+        <option value="props">props </option>
+        <option value="sets">sets </option>
+      </select>
+    </div>
+    <div class="form-group" id="selData">
+      <label for="exampleFormControlSelect2">Name of assests :</label>
+      <select  class="form-control" id="exampleFormControlSelect3" onchange="Nameofassetschanged()">
+        <option value="Name of assests">Name of assests </option>      
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="exampleFormControlSelect4">Assestprocess :</label>
+      <select  class="form-control" id="exampleFormControlSelect4" onchange="Nameoftextures()">
+        <option value="rigging">rigging </option>
+        <option value="texturing">texturing </option>
+        <option value="texturing">texturing </option>    
+      </select>
+    </div>
+    <div class="form-group" id="namedat" >
+      <select id="supervisorinfo" class="form-control ">
+        <option value="Supervisor">Supervisor </option>
+      </select>
+    </div>
+    <div>
+      <input type="text" id="des" value="Description" class="form-control">
+    </div>
+    <div>
+      <input type="button" id="var" value="submit">
+   </div>
+ </div>
+
+<!-- asset informodal popup end -->
+
+<!-- asset informodal popup end -->
+<script >
+
+  $(document).ready(function() {
+    var modal = document.getElementById('myPopupModal');
+      var span = document.getElementsByClassName("close")[0];
+
+     modal.style.display = "none";
+
+     span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+     $(".reAllotBtn").click(function(){
+
+    // alert("ds s done");
+    alert(this.id);
+    var task_id = this.id;
+    console.log(this.id);
+
+    $("#task_id_popup").html("Reallotment of Task No: "+task_id)
+
+
+    // to visible our modal popup
+    modal.style.display = "block";
+
+
+      });
+
+
+     });
+    
+    </script>
+<script>
+$("#iddata").click(function(){
+  var iddataget=$("#exampleFormControlSelect2").val();
+  //alert(iddataget);
+  task_id_from_h2 = 
+  $("#task_id_popup").html();
+
+  //  Reallotment of Task No: 13
+  // alert(task_id_from_h2.split(":")[1]);
+  var id = task_id_from_h2.split(":")[1];
+
+  // to update task with assigned username
+  console.log(id);
+  console.log(iddataget);
+  $.ajax({
+      type:"GET",
+      url:"/process/reallot_update/",
+      data:{"assign_id":iddataget,"task_id":id},
+      success:function(data)
+      {
+        alert(data.msg);
+        var modal = document.getElementById('myPopupModal');
+        modal.style.display = "none";
+
+      }
+      });
+
+  //===========
+
+
+  });
+
+</script>
+
+<script type="text/javascript">
+function myFunction () {
+  //this is for getting all the status in task_call page in browser
+  var x = document.getElementById("mySelect").value;
+  //this is for getting all the ids in task_call page in browser    
+  var id=document.getElementById("get_id").innerText;
+  //this is for getting all the assigned ids in task_call page in browser
+  var assigned_value = document.getElementById("mySelects").value;
+
+  alert(assigned_value);
+  if (assigned_value!="ASSIGNED")
+  {
+    $.ajax({
+        type:"GET",
+        url:"/process/task_call/",
+        data:{"check_this":x,"user_id":id,"assign_dat":assigned_value},
+        success:function(data)
+        {alert("success");}
+      });
+
+  }
+  else
+  {
+    alert("not updated"); 
+  }
+
+  // $.ajax({
+  //      type:"GET",
+  //      url:"/process/task_call/",
+  //      data:{"check_this":x,"user_id":id},
+
+  //      success:function(data)
+  //      {alert("success");}
+
+  //    });
+
+}
+
+</script>
+<script type="text/javascript">
+function myFunctions() {
+  //this is for getting all the assigned in task_call page in browser
+  var x = document.getElementById("mySelects").value;
+  //this is for getting all the ids in task_call page in browser    
+  var id=document.getElementById("get_id").innerText;
+  alert(id,x);
+  $.ajax({
+        type:"GET",
+        url:"/process/task_call/",
+        data:{"assigned_part":x,"user_id":id},
+
+        success:function(data)
+        {alert("success");}
+                
+      });
+
+}
+
+</script><script>
+$(".assetBtn").click(function(){
+  alert("hii")
+  var modal = document.getElementById('popupinfo');
+      var span = document.getElementsByClassName("modalclose")[0];
+
+     modal.style.display = "block";
+
+     span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+
+
+  });
+</script>
+<script>
+$(".renderbtn").click(function(){
+  alert("hii")
+  alert(this.id)
+id=this.id  
+$('#getidinfo').html(id.split("_")[1])
+
+  var modal = document.getElementById('render_popupinfo');
+      var span = document.getElementsByClassName("close1")[0];
+
+     modal.style.display = "block";
+
+     span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+  });
+</script>
+<script>
+function assetTypeChange(){
+getchars=$('#getassesttypeid').val()
+// alert(getchars)
+$.ajax({
+      type:"GET",
+      url:"/process/assestdata/",
+      data:{"getinfo":getchars},
+      success:function(data)
+      {
+        // alert("success ");
+        // alert(data.sss);
+        assestdat=$('#selData').html(data.sss)
+      }
+      });
+
+}
+</script>
+<script>
+function Nameoftextures(){
+gettexture=$('#exampleFormControlSelect4').val()
+// alert(gettexture)
+$.ajax({
+      type:"GET",
+      url:"/process/assestdata/",
+      data:{"textre":gettexture},
+      success:function(data)
+      {
+        // alert("success ");
+        // alert(data)
+        // alert(data.sup);
+        supeda=$('#namedat').html(data.sup)
+      }
+
+           });
+}
+</script>
+<script>
+$("#var").click(function(){
+descriptiontype=$('#des').val()
+getassesttype=$('#getassesttypeid').val()
+get_name_of_asset=$('#exampleFormControlSelect3').val()
+get_asset_processes=$('#exampleFormControlSelect4').val()
+get_process_related_supervisor=$('#supervisorinfo').val()
+alert("hii");
+alert(descriptiontype);
+
+if(get_process_related_supervisor == 'Supervisor')
+{
+   alert('Please select supervisor id')
+}
+else
+{
+  if(get_name_of_asset=='Name of assests')
+  {
+   alert('Please select name of asests') 
+  }
+   else
+   {
+$.ajax({
+      type:"GET",
+      url:"/process/submitdata/",
+      data:{"asset_type":getassesttype,
+      'asset_name':get_name_of_asset,'asset_process':get_asset_processes,'process_sup':get_process_related_supervisor,'descpritioninfo':descriptiontype},
+      success:function(data)
+      {
+        alert("success ");
+        alert(data.message)
+        var modal=document.getElementById('popupinfo')
+       modal.style.display = "none"; 
+      }
+  });
+  }//inner else end
+}// else end
+});
+</script>
+<!-- func calling from viewsfor modal popup in relloct,assetdata -->
+<script>
+function sunitha(){
+  alert("hii")
+
+  var modal = document.getElementById('myPopupModal');
+    // alert("ds s done");
+    // alert(this.id);
+    // var task_id = this.id;
+    // console.log(this.id);
+
+    // $("#task_id_popup").html("Reallotment of Task No: "+task_id)
+    // to visible our modal popup
+    modal.style.display = "block";
+          
+    
+}
+
+function assestnamesunitha(){
+  alert("asset")  
+  var modal = document.getElementById('popupinfo');
+      var span = document.getElementsByClassName("modalclose")[0];
+
+     modal.style.display = "block";
+
+     span.onclick = function() {
+        modal.style.display = "none";  
+  }
+}
+
+function renderlayers(){
+  alert("render layers  starting ..")
+    var modal = document.getElementById('render_popupinfo');
+      var span = document.getElementsByClassName("modalclose")[0];
+
+     modal.style.display = "block";
+
+     span.onclick = function() {
+        modal.style.display = "none";
+    
+  }
+
+}
+</script>
+
+</div>
+
+{% endblock %}

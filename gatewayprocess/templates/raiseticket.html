@@ -1,48 +1,67 @@
 {% extends 'base_index.html' %}
-
 {% block content %}
+<div class="container">
 <div id="contents"> 
 <form action="{% url 'generating' %}" method="post" class="message">
   {% csrf_token %}
-  <div class="form-group">
-    <label for="name">Id:</label>
-    <select name="ids">
+
+<div class="row">
+  <div class="col-md-6" style="float:left">
+    <label for="ids">Id:</label>
+    
+    <select name="ids" id="idinfo"class="form-control">
         <option value="ID">ID</option>
         <option value="p6852">p6852</option>
         <option value="p6851">p6851</option>
         <option value="p6850">p6850</option>
+        <option value="p6999">p6999</option>
     </select>
     <!-- <input type="name" class="form-control" id="name" name='name'> -->
   </div>
-
-  <div class="form-group">
-    <label for="name">Ticket Type:</label>
-    <select name="ticket_type">
+  <div class="col-md-6" style="float:left">
+    <label for="ticket_type">Ticket Type:</label>
+    <select name="ticket_type" id="namedata"class="form-control">
         <option value="Type">Type</option>
         <option value="New One">New One</option>
         <option value="Existing One">Existing One</option>
         <option value="Bug fixing">Bug fixing</option>
     </select>  
   </div>
-
-  <div class="form-group">
+</div>
+<div class="row">
+  <div class ="col-md-6" style="float:left">
+    <label for="project">Project:</label>
+    <select name="projects" id="projectdata"class="form-control">
+        <option value="Project">PROJECT</option>
+        <option value="FIVE_IT">FIVE_IT</option>
+        <option value="PDT">PDT</option>
+        <option value="MRR">MRR</option>
+        <option value="RH2">RH2</option>
+    </select>
+    <!-- <input type="name" class="form-control" id="name" name='name'> -->
+  </div>
+  <div class="col-md-6"style="float:left">
     <label for="name">Deadline:</label>
     <input type="date" name="deadline">
   </div>
 
-  <div class="form-group">
-    <label for="name">Description:</label>
-    <textarea  name="description" placeholder="Add your comment here!"></textarea>
-  </div>
-  <br>
-  <div class="form-group">
+</div> 
+ 
+  <div class="row">
+  <div class ="col-md-6" style="float:left">
     <label for="name">Department:</label>
-    <input type="text" name="department">
+    <input type="text" class="form-control" name="department" style="width:100px;">
   </div>
-  <br>
-  <div class="form-group">
+  
+  <div class ="col-md-6" style="float:left">
     <label for="name">status:</label>
-    <input type="text" name="status">
+    <input type="text" class="form-control" name="status" style="width:100px;">
+  </div>
+</div>
+
+<div class="form-group">
+    <label for="name">Description:</label>
+    <textarea class="form-control"  name="description" placeholder="Add your comment here!"></textarea>
   </div>
   <br>
   <button type="submit" class="btn btn-primary">Submit</button>
@@ -52,4 +71,6 @@
 <br>
   
 </div>
+</div>
+
 {% endblock %}

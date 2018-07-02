@@ -15,7 +15,9 @@
 		{%elif i.user_role == 3%}
 			{{i.email|upper}}
 			<p>Developer|lower</p> 
-			{{request.user.username}}		
+			{{request.user.username}}
+			{{request.user.email}}
+			{{request.user.id}}		
 		{%else%}
 			{{i.email}}
 			<p>Admin</p> 

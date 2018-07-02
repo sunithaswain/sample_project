@@ -1,21 +1,65 @@
 {% extends 'base_index.html' %}
 {% block content %}
-<select id ="college_id">
-	<option>College</option>
+<div id="contents">
+  <select id ="college_id" class="colleges_cls" multiple="multiple">	
 	{% for i in colleges%}	
 	<option>{{i}}</option>
 	{%endfor%}
 </select>
-
-<select id ="year_id">
-	<option>Year</option>
-	{% for i in years%}	
+<select id ="year_id" class="year_cls" multiple="multiple">
+	{% for i in years%} 	
 	<option>{{i}}</option>
 	{%endfor%}
 </select>
+<script>
+ $(document).ready(function() {
+$(".colleges_cls").SumoSelect({search: true,searchText: 'Enter episode...',selectAll: true});
+$(".year_cls").SumoSelect({search: true,searchText: 'Enter year...',selectAll: true});
 
-<!-- <button class="btn btn-success">Refresh</button> -->
+});
+</script>
+</div>
+<button type="button" onclick="button()">download</button>
+<script>
+function button()
+{
+    // alert("sunitha");
+    // alert('hi');
+    var options = {background:"#418423"}
+
+    var doc = new jsPDF('p', 'pt', 'a4');
+
+    doc.addHTML($('#dynamic_table'),options, function(){
+        doc.save('reportinfo.pdf');
+    });
+}
+</script>
 <!-- <button type="submit" class="btn btn-primary" id="submit_btn" onclick="sunita()">Submit</button> -->
+
+
+<!-- multi dropdown code  start -->
+<!--dis for textbox and dropdown in jq and geting d value-->
+<!-- <div class="dropdown">
+  <button class="dropbtn">Colleges</button>
+  <div class="dropdown-content" id ="college_id">
+
+    {% for i in colleges%}
+    <label><input type="checkbox" name="colleges" value="{{i}}">{{i}}</input> </label>   
+    {%endfor%}
+  </div>
+</div> -->
+
+<!-- <div class="dropdown">
+  <button class="dropbtn">Years</button>
+  <div class="dropdown-content" id ="year_id">
+  {% for j in years%}
+  <label><input type="checkbox" name="years" value="{{j}}">{{j}}</input> </label>
+  {%endfor%}
+  </div>
+</div> -->
+
+<!--  multi dropdown code  end -->
+
 <button type="submit" class="btn btn-primary" id="submit_btn">Submit</button>
 
 <div id="dynamic_table">
@@ -87,23 +131,40 @@ var modal = document.getElementById('myPopupModal');
 $('#submit_btn').click(function(){
 
 	//alert("hi");
-	var year=$('#year_id').val();
-	var college=$('#college_id').val();
-    console.log(year);
-    console.log(college);
-	if ((college!='College') && (year !='Year'))
+	// var year=$('#year_id').val();
+	// var college=$('#college_id').val();
+ //    console.log(year);
+ //    console.log(college);
+
+    // var colleges_list = [];
+    //     $.each($("input[name='colleges']:checked"), function(){
+    //             colleges_list.push($(this).val());
+    //         });
+    // // alert(colleges_list);
+    // var years_list = [];
+    //     $.each($("input[name='years']:checked"), function(){
+    //             years_list.push($(this).val());
+    //         });
+    // alert(years_list);
+  colleges_list=$(".colleges_cls").val();
+  years_list=$(".year_cls").val();
+  // alert(getcollist);
+
+
+	if ((colleges_list!='') && (years_list !=''))
 	{
-		//alert('condition ok');
+		alert(years_list);
 		$.ajax({
             type:"GET",
             url:"/process/student_data/",
-            data:{"sel_year":year,"sel_college":college},
+            data:{"sel_year":years_list,"sel_college":colleges_list},
+            // dataType : 'json',
             success:function(data)
             {                       
             	console.log("success");
                 // console.log(data.filter_data);
                 // alert(data.filter_data);
-                
+                //
                 $("#dynamic_table").html(data.filter_data);
                                
             }            

@@ -28,3 +28,5 @@ class ticketlogform(forms.Form):
     deadline=forms.CharField(max_length=250)
     department=forms.CharField(max_length=250)
     status=forms.CharField(max_length=250)
+    projects=forms.CharField(max_length=250)
+

@@ -1,0 +1,48 @@
+{% extends 'base_index.html' %}
+{% block content %}
+<div>
+	<!-- ds s for schedular table format -->
+	<table class="table" border="1">
+		<!-- table heading row start-->
+		<tr>
+			<th>Id</th>
+			<th>Start date</th>
+			<th>End date</th>
+			<th>Project</th>
+			<th>Episode</th>
+		</tr>
+		<!-- table heading row end-->
+		<!-- table data displaying -->
+		{%for i in scheuledata%}
+		<td>{{i.id}}</td>
+		<td>{{i.startdate}}</td>
+		<td>{{i.enddate}}</td>
+		<td>{{i.projectcode}}</td>
+		<td>{{i.Episode}}</td>
+		{%endfor%}
+	</table>
+<!-- ds s for table schedular table format  -->
+<table class="table" border="1">
+	<tr>
+		<th>Id</th>
+		<th>startdate</th>
+		<th>enddate</th>
+		<th>project</th>
+		<th>process</th>
+		<th>product_type</th>
+		<th>episode</th>
+	</tr>
+	{%for j in tble%}
+	<tr>
+	<td>{{j.id}}</td>
+	<td>{{j.startdate}}</td>
+	<td>{{j.enddate}}</td>
+	<td>{{j.project}}</td>
+	<td>{{j.process}}</td>
+	<td>{{j.product_type}}</td>
+	<td>{{j.episode}}</td>
+	</tr>
+	{%endfor%}
+	</table>
+</div>
+{% endblock %}

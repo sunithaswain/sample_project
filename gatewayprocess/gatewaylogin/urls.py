@@ -9,6 +9,7 @@ urlpatterns = [
     url(r'^hashpwd/', views.create_new_user, name='content_details'),
     url(r'^out/',views.logoutin, name='logout'),
     url(r'^task_call/',views.taskin, name='tasking'),
+    url(r'^reallot_update/',views.reallot_task_update, name='reallot_update_name'),    
     url(r'^generate/',views.gen_ticketing,name='generating'),
     url(r'^integrtion/',views.integrating,name='integrates'),
     url(r'^double_ids/',views.similar_ids,name='similars'),
@@ -20,8 +21,10 @@ urlpatterns = [
     url(r'^shotsup/',views.shotsupervesior,name='shotversior'),
     url(r'^getdat/',views.filteringdata,name='shotdetal'),
     url(r'^getdatversion_2/',views.filteringdata_version2,name='shotdetal_v2'),
+    url(r'^creation/',views.creationdata,name='shotdetalcreat'),
+    url(r'^creation_v2/',views.creationdata_display,name='shotdetalcreat_v2'),
     url(r'^student_data/',views.ajax_filter_data_studentdetails,name='ajax_student_data'),
-
+    #url(r'^submit/',views.submitdata,name='submitinfo'),
     
     url(r'^static/',views.staticdata,name='statdetal'),   
 
@@ -32,5 +35,13 @@ urlpatterns = [
     url(r'^report_popup/',views.reporting_popup,name='report_popup_gen'),
     url(r'^collegedetils/',views.det,name='colid'),
     url(r'^static_data_versionpopup/',views.det_popup,name='colid'),
+    url(r'^queries_testing/',views.shotdetails,name='shotdetails123'),
+    url(r'^preivewgwtdata/',views.previewinfo,name='preview'),
+    #url(r'^assestinfo/',views.Assestconcern,name='assestgen'),
+    url(r'^assestdata/',views.assest_task,name='assestprocess'),
+    url(r'^submitdata/',views.submitdat,name='submitprocess'),
+    url(r'^renderinfo/',views.render_task,name='renderdata')
+
+
 
 ]

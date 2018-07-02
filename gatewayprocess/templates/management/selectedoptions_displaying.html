@@ -1,0 +1,61 @@
+{% extends 'base_index.html' %}
+{% block content %}
+<div>
+<select id="projectdats" >
+	<option >projects</option>
+	{%for i in projectin%}
+	<option >{{i}}</option>
+	{%endfor%}
+</select>
+<select id="epsdes">
+	<option>episodes</option>
+	{%for i in ep%}
+	<option>{{i}}</option>
+	{%endfor%}
+</select>
+<select id="productsdata">
+	<option>producttype</option>
+	{%for i in product%}
+	<option>{{i}}</option>
+	{%endfor%}
+</select>
+<input type="button" value="filter" id="filterdata"></input>
+</div>
+<br></br>
+	<div id="ajax_table_data">
+
+	</div>
+<script>
+$('#filterdata').click(function()
+{
+	proj=$('#projectdats').val()	
+	ep=$("#epsdes").val()	
+	prod=$("#productsdata").val()
+	if(proj!='projects' && ep!='episodes' && prod!='producttype')
+	{
+		$.ajax({
+				type:"GET",
+				url:"/mis/ajax_filterdat/",
+	 			data:{"projdat":proj,"epsdedata":ep,"prdodata":prod},
+	 			success:function(data)
+				{
+					if (data.task_info == "")
+					{
+						alert("Data not found for selected filters")
+					}
+					else
+					{
+						$("#ajax_table_data").html(data.task_info)
+
+
+					}
+				}
+			});
+	}
+	else
+	{
+		alert("Please select appropriate values")
+	}
+});
+</script>
+{%endblock%}
