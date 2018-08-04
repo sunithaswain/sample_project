@@ -400,11 +400,6 @@ def ajax_time_schedule(request):
                     #listapp.append("checkbox")
                     for ii in head_list:                   
                         listapp.append(ii)
-                        print i, "##"
-                        print i.product_type
-                        print i.startdate
-                        print  ii, "$$"
-                        listapp.append(i.product_type)
                     dataapp.append(listapp)
                     # print dataapp,"LLLLLL"
                     # print i,">>>>>>>>>>."
@@ -425,7 +420,7 @@ def ajax_time_schedule(request):
                             ET.SubElement(tad,'input',type='checkbox',name='checkboxdata', id='checkid_{0}'.format(no)).text="Planned"
                         else:
                             # print k, "-----------"
-                            ET.SubElement(tad, 'input',type='hidden').text=str(k)
+                            ET.SubElement(tad, 'input',type='hidden').text="@@@SS"
 
                 tasks_data = ET.tostring(div_root).replace('clas','class')
                 # print tasks_data

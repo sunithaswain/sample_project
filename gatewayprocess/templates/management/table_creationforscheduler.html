@@ -14,11 +14,13 @@
 		<!-- table heading row end-->
 		<!-- table data displaying -->
 		{%for i in scheuledata%}
+		<tr>
 		<td>{{i.id}}</td>
 		<td>{{i.startdate}}</td>
 		<td>{{i.enddate}}</td>
 		<td>{{i.projectcode}}</td>
 		<td>{{i.Episode}}</td>
+		</tr>
 		{%endfor%}
 	</table>
 <!-- ds s for table schedular table format  -->

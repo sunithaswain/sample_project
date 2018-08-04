@@ -20,7 +20,7 @@
 	{%endfor%}
 </select>
 <input type="button" value="filter" id="filterdata" class='btn btn-primary'></input>
-<input type="button" value="save" class='btn btn-success' id="save"></input>
+<!-- <input type="button" value="save" class='btn btn-suc >cess' id="save"></input>-->
 </div>
 <br></br>
 	<div id="ajax_table_data_from_views">
@@ -31,22 +31,23 @@ $('#filterdata').click(function()
 	proj=$('#projectdats').val()	
 	ep=$("#epsdes").val()	
 	prod=$("#productsdata").val()
+	alert(prod)
 	if(proj!='projects' && ep!='episodes' && prod!='producttype')
 	{
 		$.ajax({
 				type:"GET",
 				url:"/mis/time_scheduler_ajax/",
 	 			data:{"projdat":proj,"epsdedata":ep,"prdodata":prod},
-	 			success:function(data)
+	 			success:function(data1)
 				{
 					alert('success')
-					if (data.task_info == "")
+					if (data1.task_info == "")
 					{
 						alert("Data not found for selected filters")
 					}
 					else
 					{
-						$("#ajax_table_data_from_views").html(data.task_info)
+						$("#ajax_table_data_from_views").html(data1.task_info)
 
 
 					}
