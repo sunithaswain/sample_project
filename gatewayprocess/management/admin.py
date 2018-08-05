@@ -9,7 +9,7 @@ class Insertdata(admin.ModelAdmin):
 	search_fields=['episode','projectcode']
 admin.site.register(Schedule,Insertdata)
 class Tabledata(admin.ModelAdmin):
-	list_display=('product_type','startdate','enddate','project','process','episode','lock')
-	search_fields = ['product_type','project']
+	list_display=('product_type','startdate','enddate','project','process','episode','lock','schedule_id')
+	search_fields = ['product_type','project', 'episode']
 # ,'lock')
 admin.site.register(Table_schedule,Tabledata)

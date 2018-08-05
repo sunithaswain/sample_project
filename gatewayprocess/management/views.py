@@ -55,7 +55,12 @@ def create_schedule(request):
                 # print post,"pppp"
                 postenddate=productionenddate+datetime.timedelta(days=dividingday)
                 # print addforpost,":::::::::"
-                Schedule.objects.create(startdate=st_date,enddate=st1_date,projectcode=prodat,episode=epdat,lock='NO')
+                c_schedule = Schedule.objects.create(startdate=st_date,enddate=st1_date,projectcode=prodat,episode=epdat,lock='NO')
+                c_schedule.save()
+                print ",,,,,,,,,,,", c_schedule
+                sch_id = str(c_schedule.id)
+                # print c_schedule.id, "&&&"
+                # print type(c_schedule.id)
                 print "dictionary"
                 batch_list=[]
                 for key,value in dic.items():
@@ -68,11 +73,11 @@ def create_schedule(request):
                         if key=="asset":
                             print key,"kkk"
 
-                            batch_list.append(Table_schedule(startdate=assetstartdate,enddate=assetenddate,project=prodat,episode=epdat,process=j,product_type=key,lock='NO'))
+                            batch_list.append(Table_schedule(startdate=assetstartdate,enddate=assetenddate,project=prodat,episode=epdat,process=j,product_type=key,lock='NO',schedule_id=sch_id))
                         elif key=="production":
-                            batch_list.append(Table_schedule(startdate=productionstartdate,enddate=productionenddate,project=prodat,episode=epdat,process=j,product_type=key,lock='NO'))
+                            batch_list.append(Table_schedule(startdate=productionstartdate,enddate=productionenddate,project=prodat,episode=epdat,process=j,product_type=key,lock='NO',schedule_id=sch_id))
                         elif key=="post":
-                            batch_list.append(Table_schedule(startdate=poststartdate,enddate=postenddate,project=prodat,episode=epdat,process=j,product_type=key,lock='NO'))
+                            batch_list.append(Table_schedule(startdate=poststartdate,enddate=postenddate,project=prodat,episode=epdat,process=j,product_type=key,lock='NO',schedule_id=sch_id))
 
                 # print ">>>",len(batch_list)
                 Table_schedule.objects.bulk_create(batch_list)
@@ -356,9 +361,7 @@ def ajax_time_schedule(request):
                 data1 = {'task_info':"Data not available"}
                 return JsonResponse(data1)
         elif proinfo == "product_type_view":
-            producttype=Table_schedule.objects.filter(project=projdat,episode=epinfo)
-            print producttype
-            print len(producttype), "&&&&"
+            
             producttype_schedule=Schedule.objects.filter(projectcode=projdat,episode=epinfo)
             print producttype_schedule
             print len(producttype_schedule), "&&&&"
@@ -367,9 +370,11 @@ def ajax_time_schedule(request):
                 d=None
                 d1=None
                 delta=None
+                sch_id = []
                 for stdata in producttype_schedule:
                     startget=stdata.startdate
                     endget=stdata.enddate
+                    sch_id.append(stdata.id)
                     # print startget,endget,"ggg"
                     # print startget.date()
                     d=startget.date()
@@ -381,6 +386,12 @@ def ajax_time_schedule(request):
                         # print delta,"}}}}}}}}]"
                     # for i in range(delta.days + 1):
                     #     print(d1 + datetime.timedelta(i))
+                print sch_id, "^^^^"
+                if len(sch_id) > 0:
+                    sch_id = sch_id[0]
+                producttype=Table_schedule.objects.filter(project=projdat,episode=epinfo, schedule_id = sch_id)
+                print producttype
+                print len(producttype), "&&&&"
 
                 head_list = ['checkbox']
                 # if delta is not None:
@@ -400,11 +411,11 @@ def ajax_time_schedule(request):
                     #listapp.append("checkbox")
                     for ii in head_list:                   
                         listapp.append(ii)
-                        print i, "##"
-                        print i.product_type
-                        print i.startdate
-                        print  ii, "$$"
-                        listapp.append(i.product_type)
+                        # print i, "##"
+                        # print i.product_type
+                        # print i.startdate
+                        # print  ii, "$$"
+                        # listapp.append(i.product_type)
                     dataapp.append(listapp)
                     # print dataapp,"LLLLLL"
                     # print i,">>>>>>>>>>."

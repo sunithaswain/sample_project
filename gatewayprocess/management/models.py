@@ -18,3 +18,4 @@ class Table_schedule(models.Model):
 	product_type=models.CharField(max_length=250 ,blank=True,null=True)
 	episode=models.CharField(max_length=250 ,blank=True,null=True)
 	lock=models.CharField(max_length=250 ,blank=True, null=True)
+	schedule_id = models.CharField(max_length=250 ,blank=True,null=True)
