@@ -23,6 +23,10 @@
 <!-- <input type="button" value="save" class='btn btn-suc >cess' id="save"></input>-->
 </div>
 <br></br>
+	<div class="container">
+		<div class="gantt-target1"></div>
+	</div>
+
 	<div id="ajax_table_data_from_views">
 	</div>
 <script>
@@ -47,6 +51,42 @@ $('#filterdata').click(function()
 					}
 					else
 					{
+						
+					var tasks = data1.dddd
+					// var tasks = [
+					// 	{
+					// 		start: '2018-10-01',
+					// 		end: '2018-10-12',
+					// 		name: 'Redesign website',
+					// 		id: "Task 0",
+					// 		progress: 20
+					// 	},
+					// 	{
+					// 		start: '2018-10-01',
+					// 		end: '2018-10-12',
+					// 		name: 'Redesign website',
+					// 		id: "Task 0",
+					// 		progress: 20
+					// 	},
+					// 	data1.dddd
+					// 	]
+
+					var gantt_chart = new Gantt(".gantt-target1", tasks, {
+						on_click: function (task) {
+							console.log(task);
+						},
+						on_date_change: function(task, start, end) {
+							console.log(task, start, end);
+						},
+						on_progress_change: function(task, progress) {
+							console.log(task, progress);
+						},
+						on_view_change: function(mode) {
+							console.log(mode);
+						}
+					});
+					alert(data1.dddd)
+
 						$("#ajax_table_data_from_views").html(data1.task_info)
 
 

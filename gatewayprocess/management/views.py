@@ -391,7 +391,7 @@ def ajax_time_schedule(request):
                     sch_id = sch_id[0]
                 producttype=Table_schedule.objects.filter(project=projdat,episode=epinfo, schedule_id = sch_id)
                 print producttype
-                print len(producttype), "&&&&"
+                print len(producttype), "&&&&, ------>"
 
                 head_list = ['checkbox']
                 # if delta is not None:
@@ -406,13 +406,49 @@ def ajax_time_schedule(request):
                     # print(d1 + datetime.timedelta(i)), "$$$$$$"
                 # head_list1=head_list
                 # head_list1.remove("checkbox")
+                
+                tasks_dict_list = []
+                
                 for i in producttype:
+                    print i.product_type,"9999"
+                    if i.product_type == "asset":
+                        ast_data_dict = {}
+                        ast_data_dict['start']=i.startdate
+                        print i.startdate,"********************"
+                        ast_data_dict['end']=i.enddate
+                        ast_data_dict['name']=i.product_type
+                        ast_data_dict['progress']=20
+                        ast_data_dict['id']='Task 001'
+                        tasks_dict_list.append(ast_data_dict)
+                    elif i.product_type == "production":
+                        ast_data_dict = {}
+                        ast_data_dict['start']=i.startdate
+                        print i.startdate,"********************"
+                        ast_data_dict['end']=i.enddate
+                        ast_data_dict['name']=i.product_type
+                        ast_data_dict['progress']=20
+                        ast_data_dict['id']='Task 002'
+                        tasks_dict_list.append(ast_data_dict)                  
+                    elif i.product_type == "post":
+                        ast_data_dict = {}
+                        ast_data_dict['start']=i.startdate
+                        print i.startdate,"********************"
+                        ast_data_dict['end']=i.enddate
+                        ast_data_dict['name']=i.product_type
+                        ast_data_dict['progress']=20
+                        ast_data_dict['id']='Task 002'
+                        tasks_dict_list.append(ast_data_dict)                  
+                    else:
+                        pass
                     listapp=[]
                     #listapp.append("checkbox")
                     for ii in head_list:                   
                         listapp.append(ii)
                         # print i, "##"
-                        # print i.product_type
+
+
+
+                            # pass
                         # print i.startdate
                         # print  ii, "$$"
                         # listapp.append(i.product_type)
@@ -440,10 +476,13 @@ def ajax_time_schedule(request):
 
                 tasks_data = ET.tostring(div_root).replace('clas','class')
                 # print tasks_data
-                data1 = {'task_info':tasks_data,"message":"Done"}
+                print tasks_dict_list
+
+
+                data1 = {'task_info':tasks_data,"message":"Done", 'dddd':tasks_dict_list}
                 return JsonResponse(data1)
             else:
-                data1 = {'task_info':"Data not available"}
+                data1 = {'task_info':"Data not available", 'dddd':''}
                 return JsonResponse(data1)
             #msg={'task_info':'hii'}
             # return JsonResponse(msg)
